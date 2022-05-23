@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Submit from "./components/submit.jsx";
+import ShowAll from "./components/showall.jsx";
 import axios from "axios";
 
 //One ether = 1,000,000,000,000,000,000 wei
@@ -15,7 +16,7 @@ export default function App() {
       <button onClick={() => submitRecord()}>Submit a record</button>
       <button onClick={() => showRecords()}>Show all records</button>
       {submit && <Submit />}
-      {showAll && <h6>all transactions</h6>}
+      {showAll && <ShowAll showRecords={showRecords} />}
     </div>
   );
 }

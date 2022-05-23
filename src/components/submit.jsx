@@ -3,30 +3,35 @@ import axios from "axios";
 
 export default function Submit() {
   const [transactionHash, setTransactionHash] = useState();
-  const [type, setType] = useState();
+  const [transactionType, setTransactionType] = useState();
 
   const [details, setDetails] = useState(false);
   const [transactionDetails, setTransactionDetails] = useState();
 
   const handleInputChange = (event) => {
-    if (event.target.name == "transaction") {
+    if (event.target.name == "transactionHash") {
       setTransactionHash(event.target.value);
     }
 
-    if (event.target.name == "platformfee") {
-      setPlatform(event.target.value);
+    if (event.target.name == "transactionType") {
+      setTransactionType(event.target.value);
     }
 
-    if (event.target.name == "type") {
-      setType(event.target.value);
-    }
-
-    console.log(transactionHash, platform, type);
+    console.log(transactionHash, transactionType);
   };
 
-  function search(e) {
+  function record(e) {
     e.preventDefault();
     console.log(transactionHash);
+
+    const data = {
+      transactionType: transactionType,
+      transactionHash: transactionHash,
+    };
+
+    axios
+      .post(`https://ocalhost:3004/track-transaction`, data)
+      .then((response) => console.log(response));
     // axios.get(`https://localhost:3002/${transactionHash}`).then((response) => {
     //   console.log(response.data);
 
@@ -66,7 +71,7 @@ export default function Submit() {
   }, [details, transactionDetails]);
   return (
     <div>
-      <form onSubmit={(e) => search(e)}>
+      <form onSubmit={(e) => record(e)}>
         <label>Transaction Hash</label>
         <input
           type="text"
