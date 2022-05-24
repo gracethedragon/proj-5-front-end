@@ -1,53 +1,55 @@
 import React, { useEffect, useState } from "react";
+import { OverallGraph } from "./graph.jsx";
 import axios from "axios";
 
-export default function ShowAll({ showAll }) {
-  const [allTransactions, setAllTransactions] = useState();
+export default function ShowAll() {
+  const [allTransactionDetails, setAllTransactionDetails] = useState([]);
+  const [statDetails, setStatDetails] = useState([]);
   const [showTransactions, setShowTransactions] = useState(false);
+  useEffect(() => {
+    axios.get("/all-transactions").then((response) => {
+      console.log(response.data);
+      setAllTransactionDetails(response.data.transaction);
+      setStatDetails(response.data.stats);
+      console.log(allTransactionDetails);
+      setShowTransactions(true);
+    });
+  }, []);
 
-  const sendGetReq = async () => {
-    console.log("true");
-    try {
-      await axios.get("/retrieve-tracked-transactions").then((res) => {
-        console.log(res.data.tradedTransactions);
-        setAllTransactions(res.data.tradedTransactions);
-        setShowTransactions(true);
-        console.log(allTransactions);
-      });
-    } catch (err) {
-      console.log("err", err);
-    }
-  };
-
-  if (showAll === true) {
-    sendGetReq();
-  } else {
-    setShowTransactions(false);
-  }
-
-  // useEffect(() => {
-  //   console.log(allTransactions.data);
-  // }, showTransactions);
   return (
     <div>
       <h6>Portfolio to date</h6>
       {showTransactions && (
-        <div>
-          {allTransactions.map((row) => {
-            return (
-              <div>
-                <h6>
-                  Transaction Value USD:{" "}
-                  {row.transaction.transactionStatistics.transactionValueUSD}
-                </h6>
-                <h6>
-                  Current Value USD:{" "}
-                  {row.transaction.transactionStatistics.CurrentValueUSD}
-                </h6>
-              </div>
-            );
-          })}
-        </div>
+        <>
+          <div id="summary-container">
+            <div>
+              Outlay TD: {statDetails.outlay} | Unrealised Rev:{" "}
+              {statDetails.unrealrev} | Unrealised G/L:{" "}
+              {statDetails.unrealgl.toFixed(2)}%
+            </div>
+            <div>
+              Sale Oulay: {statDetails.saleoutlay} | Actual Rev:{" "}
+              {statDetails.actualrev} | Actual G/L: {statDetails.actualgl}
+            </div>
+          </div>
+          <div id="transaction-container">
+            {allTransactionDetails.map((detail) => {
+              return (
+                <div key={detail.id} className="transaction">
+                  {detail.txValue.date} | {detail.transactionType} |{" "}
+                  {detail.qty} | {detail.network} | {detail.txValue.value} |{" "}
+                  {detail.currentValue.value} |
+                </div>
+              );
+            })}
+          </div>
+          <div id="graph">
+            <OverallGraph
+              outlayTD={statDetails.outlay}
+              unrealisedRev={statDetails.unrealrev}
+            />
+          </div>
+        </>
       )}
     </div>
   );

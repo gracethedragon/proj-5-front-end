@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Graph from "./graph.jsx";
+import { IndivGraph } from "./graph.jsx";
 import axios from "axios";
 
 export default function Submit() {
@@ -62,10 +62,10 @@ export default function Submit() {
               <option value="" hidden>
                 ---Choose One---
               </option>
-              <option value="sell">sell</option>
-              <option value="buy">buy</option>
-              <option value="transferIn">transfer in</option>
-              <option value="transferOut">transfer out</option>
+              <option value="SELL">sell</option>
+              <option value="BUY">buy</option>
+              <option value="TRANSFER-IN">transfer in</option>
+              <option value="TRANSFER-OUT">transfer out</option>
             </select>{" "}
             <br />
             <input type="submit" value="submit" />
@@ -91,7 +91,7 @@ export default function Submit() {
               {(transactionDetails.data.stats.unrealisedGL * 100).toFixed(2)}%
             </span>
             <div id="graph">
-              <Graph
+              <IndivGraph
                 txValue={transactionDetails.data.transaction[0].txValue.value}
                 curValue={
                   transactionDetails.data.transaction[0].currentValue.value

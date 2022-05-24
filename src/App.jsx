@@ -9,15 +9,22 @@ export default function App() {
   const [submit, setSubmit] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
-  const submitRecord = () => setSubmit(!submit);
-  const showRecords = () => setShowAll(!showAll);
+  const submitRecord = () => {
+    setSubmit(true);
+    setShowAll(false);
+  };
+  const showRecords = () => {
+    setShowAll(true);
+    setSubmit(false);
+  };
+
   return (
     <div>
       <button onClick={() => submitRecord()}>Submit a record</button>
       <button onClick={() => showRecords()}>Show all records</button>
       <button>Logout</button>
       {submit && <Submit />}
-      {showAll && <ShowAll showAll={showAll} />}
+      {showAll && <ShowAll />}
     </div>
   );
 }

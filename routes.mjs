@@ -6,41 +6,50 @@ export default function routes(app) {
     response.sendFile(resolve("dist", "main.html"));
   });
 
-  app.get("/retrieve-tracked-transactions", (req, res) => {
-    const tradedTransactions = [
-      {
-        transaction: {
+  app.get("/all-transactions", (req, res) => {
+    const response = {
+      transaction: [
+        {
           id: 1,
           hash: "0x53285927aeb2594eaa5af6d9bd8560b4abcf7e6795ae40450496770d47e075ac",
           qty: 0.5,
           network: "ETH",
-          sendingAddress: "0x248fb95fc8e064faeb5c8cbeab59d06558ceec80",
-          retrievingAddress: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          historicalPrices: 1045.68 / 0.5,
+          transactionType: "BUY",
+          txValue: { date: "2022/05/22", value: 1000.21 },
+          currentValue: { date: "2022/05/24", value: 1018.71 },
         },
-        transactionStatistics: {
-          transactionValueUSD: { value: 1045.68 },
-          CurrentValueUSD: { value: 1018.71 }, //2037.42*0.5
-        },
-      },
-      {
-        transaction: {
+        {
           id: 2,
           hash: "0x53285927aeb2594eaa5af6d9bd8560b4abcf7e6795ae40450496770d47e075ac",
           qty: 0.5,
           network: "ETH",
-          sendingAddress: "0x248fb95fc8e064faeb5c8cbeab59d06558ceec80",
-          retrievingAddress: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          historicalPrices: 1045.68 / 0.5,
+          transactionType: "BUY",
+          txValue: { date: "2022/05/23", value: 1001.21 },
+          currentValue: { date: "2022/05/24", value: 1018.71 },
         },
-        transactionStatistics: {
-          transactionValueUSD: 1045.68,
-          CurrentValueUSD: 1018.71, //2037.42*0.5
+        {
+          id: 3,
+          hash: "0x53285927aeb2594eaa5af6d9bd8560b4abcf7e6795ae40450496770d47e075ac",
+          qty: 0.2,
+          network: "ETH",
+          transactionType: "BUY",
+          txValue: { date: "2022/05/23", value: 1001.15 },
+          currentValue: { date: "2022/05/24", value: 1018.71 },
         },
+      ],
+      stats: {
+        saleoutlay: 0,
+        outlay: 1000.21 + 1001.21 + 1001.15,
+        actualrev: 0,
+        unrealrev: 1018.71 + 1018.71 + 1018.71,
+        actualgl: 0,
+        unrealgl:
+          ((1018.71 + 1018.71 + 1018.7 - (1000.21 + 1001.21 + 1001.15)) /
+            (1018.71 + 1018.71 + 1018.71)) *
+          100,
       },
-    ];
-
-    res.send({ tradedTransactions });
+    };
+    res.send(response);
   });
 
   app.post("/track-transaction", (req, res) => {
