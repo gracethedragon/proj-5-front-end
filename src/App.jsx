@@ -15,8 +15,9 @@ export default function App() {
     <div>
       <button onClick={() => submitRecord()}>Submit a record</button>
       <button onClick={() => showRecords()}>Show all records</button>
+      <button>Logout</button>
       {submit && <Submit />}
-      {showAll && <ShowAll showRecords={showRecords} />}
+      {showAll && <ShowAll showAll={showAll} />}
     </div>
   );
 }

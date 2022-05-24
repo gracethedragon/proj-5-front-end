@@ -50,11 +50,13 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
+    "chart.js": "^3.7.1",
     "cookie-parser": "^1.4.5",
     "ejs": "^3.1.8",
     "express": "^4.17.1",
     "method-override": "^3.0.0",
     "pg": "^8.5.1",
+    "react-chartjs-2": "^4.1.0",
     "sequelize": "^6.19.2"
   }
 }
