@@ -11,6 +11,8 @@ export default function App() {
   const [submit, setSubmit] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
+  const [token, setToken] = useState(null);
+
   const submitRecord = () => {
     console.log(submit);
     console.log(showAll);
@@ -26,8 +28,8 @@ export default function App() {
   };
   return (
     <div>
-      {!authorized && <Login setAuthorized={setAuthorized} />}
-      {authorized && (
+      {!token && <Login setAuthorized={setAuthorized} setToken={setToken} />}
+      {token && (
         <div>
           <button onClick={() => submitRecord()}>Submit a record</button>
           <button onClick={() => showRecords()}>Show all records</button>
@@ -37,7 +39,7 @@ export default function App() {
           {submit && (
             <>
               <div>form</div>
-              <Submit setSubmit={setSubmit} />
+              <Submit token={token} setSubmit={setSubmit} />
             </>
           )}
           {showAll && <ShowAll />}

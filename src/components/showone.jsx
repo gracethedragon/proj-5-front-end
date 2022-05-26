@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { IndivGraph } from "./graph.jsx";
-import axios from "axios";
 
-const instance = axios.create({
-  baseURL: "http://localhost:3001",
-});
+import { instance } from "../connection/my-axios.mjs";
+
 export default function ShowOne({ transactionDetails, setSubmit }) {
   function deleteTransaction(id) {
     console.log(id, "id");
@@ -15,30 +13,30 @@ export default function ShowOne({ transactionDetails, setSubmit }) {
     <div id="details-container">
       <div id="details-heading">
         <h6>Transaction Details</h6>
-        <h6>{transactionDetails.data.transaction[0].hash}</h6>
+        <h6>{transactionDetails.transactions[0].hash}</h6>
         <button
           onClick={() =>
-            deleteTransaction(transactionDetails.data.transaction[0].id)
+            deleteTransaction(transactionDetails.transactions[0].id)
           }
         >
           Delete
         </button>
       </div>
       <span>
-        {transactionDetails.data.transaction[0].txValue.date} |{" "}
-        {transactionDetails.data.transaction[0].transactionType} |{" "}
-        {transactionDetails.data.transaction[0].qty} |{" "}
-        {transactionDetails.data.transaction[0].network} |{" "}
-        {transactionDetails.data.transaction[0].txValue.value} |{" "}
-        {transactionDetails.data.transaction[0].currentValue.value} |
-        {(transactionDetails.data.stats.unrealisedGL * 100).toFixed(2)}%
+        {transactionDetails.transactions[0].txValue.date} |{" "}
+        {transactionDetails.transactions[0].transactionType} |{" "}
+        {transactionDetails.transactions[0].qty} |{" "}
+        {transactionDetails.transactions[0].network} |{" "}
+        {transactionDetails.transactions[0].txValue.value} |{" "}
+        {transactionDetails.transactions[0].currentValue.value} |
+        {(transactionDetails.stats.unrealgl * 100).toFixed(2)}%
       </span>
       <div id="graph">
         <IndivGraph
-          txValue={transactionDetails.data.transaction[0].txValue.value}
-          curValue={transactionDetails.data.transaction[0].currentValue.value}
-          txDate={transactionDetails.data.transaction[0].txValue.date}
-          curDate={transactionDetails.data.transaction[0].currentValue.date}
+          txValue={transactionDetails.transactions[0].txValue.value}
+          curValue={transactionDetails.transactions[0].currentValue.value}
+          txDate={transactionDetails.transactions[0].txValue.date}
+          curDate={transactionDetails.transactions[0].currentValue.date}
         />
       </div>
     </div>

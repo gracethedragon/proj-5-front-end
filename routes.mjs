@@ -66,7 +66,7 @@ export default function routes(app) {
         },
       ],
       stats: {
-        unrealisedGL: (1018.71 - 1000.21) / 1018.71,
+        unrealgl: (1018.71 - 1000.21) / 1018.71,
       },
     };
     res.send(response);

@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { IndivGraph } from "./graph.jsx";
 import ShowOne from "./showone.jsx";
-import axios from "axios";
+import { instance } from "../connection/my-axios.mjs";
 
-const instance = axios.create({
-  baseURL: "http://localhost:3001",
-});
-
-export default function Submit({ setSubmit }) {
+export default function Submit({ setSubmit, token }) {
   const [transactionHash, setTransactionHash] = useState();
   const [transactionType, setTransactionType] = useState();
 
-  const [showForm, setShowForm] = useState(true);
+  const [showFormIfTrueElseDetails, setShowFormIfTrueElseDetails] =
+    useState(true);
 
-  const [showDetails, setShowDetails] = useState(false);
-
-  const [transactionDetails, setTransactionDetails] = useState({});
+  const [transactionDetails, setTransactionDetails] = useState({
+    transactions: [],
+    stats: {},
+  });
 
   const handleInputChange = (event) => {
     if (event.target.name == "transactionHash") {
@@ -33,24 +31,26 @@ export default function Submit({ setSubmit }) {
     e.preventDefault();
 
     const data = {
+      token,
       transactionType: transactionType,
       transactionHash: transactionHash,
     };
 
     instance.post("/track-transaction", data).then((response) => {
       console.log(response.data);
-      const transactionData = {};
-      transactionData["data"] = response.data;
-      setTransactionDetails({ ...transactionDetails, ...transactionData });
+
+      const { transactions, stats } = response.data;
+      const transactionData = { transactions, stats };
+
+      setTransactionDetails(transactionData);
       console.log(transactionDetails);
-      setShowForm(false);
-      setShowDetails(true);
+      setShowFormIfTrueElseDetails(false);
     });
   }
 
   return (
     <div id="container">
-      {showForm && (
+      {showFormIfTrueElseDetails ? (
         <div id="form-container">
           <form onSubmit={(e) => record(e)}>
             <label>Transaction Hash</label>
@@ -78,8 +78,7 @@ export default function Submit({ setSubmit }) {
             <input type="submit" value="submit" />
           </form>
         </div>
-      )}
-      {showDetails && (
+      ) : (
         <ShowOne
           transactionDetails={transactionDetails}
           setSubmit={setSubmit}

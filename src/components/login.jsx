@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { instance } from "../connection/my-axios.mjs";
 
-const instance = axios.create({
-  baseURL: "http://localhost:3001",
-});
-
-export function Login({ setAuthorized }) {
+export function Login({ setAuthorized, setToken }) {
   const [login, setLogin] = useState(true);
   const [create, setCreate] = useState(false);
 
@@ -21,14 +17,26 @@ export function Login({ setAuthorized }) {
     }
     console.log(email, password);
   };
-  function checkLogin(e) {
+  async function checkLogin(e) {
     e.preventDefault();
     setAuthorized(true);
     console.log("login");
 
-    // instance
-    //   .get("/login", { email, password })
-    //   .then((response) => console.log(response, "logged"));
+    try {
+      const response = await instance.get("/login", {
+        params: { email, password },
+      });
+
+      const { token, username } = response.data;
+
+      console.log(
+        `Token and Username Received from Login Response  t: ${token} u: ${username}`
+      );
+      console.log(`Setting state: Token`);
+      setToken(token);
+    } catch (err) {
+      console.log("something wrong login request to server");
+    }
   }
 
   function createAccount() {
