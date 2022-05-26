@@ -3,18 +3,19 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
-import faker from "faker";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend
@@ -33,46 +34,46 @@ const options = {
 
 export function IndivGraph(graphData) {
   console.log(graphData, typeof graphData.txValue, graphData.txValue);
-  const labels = ["value (USD)"];
+  const labels = [null, "value (USD)", null];
   const data = {
     labels,
     datasets: [
       {
         label: `TxDate: ${graphData.txDate} `,
         // data: txnData,
-        data: [graphData.txValue],
+        data: [null, graphData.txValue, null],
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
       {
         label: `CurDate: ${graphData.curDate}`,
-        data: [graphData.curValue],
+        data: [null, graphData.curValue, null],
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
     ],
   };
 
-  return <Bar options={options} data={data} />;
+  return <Line options={options} data={data} />;
 }
 
 export function OverallGraph(graphData) {
   console.log(graphData);
-  const labels = ["value (USD)"];
+  const labels = [null, "value (USD)", null];
   const data = {
     labels,
     datasets: [
       {
         label: "Outlay TD",
         // data: txnData,
-        data: [graphData.outlayTD],
+        data: [null, graphData.outlayTD, null],
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
       {
         label: "Unrealised Rev",
-        data: [graphData.unrealisedRev],
+        data: [null, graphData.unrealisedRev, null],
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
     ],
   };
 
-  return <Bar options={options} data={data} />;
+  return <Line options={options} data={data} />;
 }

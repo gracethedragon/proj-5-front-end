@@ -12,6 +12,8 @@ export default function App() {
   const [showAll, setShowAll] = useState(false);
 
   const submitRecord = () => {
+    console.log(submit);
+    console.log(showAll);
     setSubmit(true);
     setShowAll(false);
   };
@@ -29,9 +31,15 @@ export default function App() {
         <div>
           <button onClick={() => submitRecord()}>Submit a record</button>
           <button onClick={() => showRecords()}>Show all records</button>
+          <button onClick={() => showRecords()}>Saved views</button>
           <button onClick={() => logout()}>Logout</button>
 
-          {submit && <Submit />}
+          {submit && (
+            <>
+              <div>form</div>
+              <Submit setSubmit={setSubmit} />
+            </>
+          )}
           {showAll && <ShowAll />}
         </div>
       )}

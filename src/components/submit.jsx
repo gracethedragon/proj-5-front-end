@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { IndivGraph } from "./graph.jsx";
+import ShowOne from "./showone.jsx";
 import axios from "axios";
 
-export default function Submit() {
+const instance = axios.create({
+  baseURL: "http://localhost:3001",
+});
+
+export default function Submit({ setSubmit }) {
   const [transactionHash, setTransactionHash] = useState();
   const [transactionType, setTransactionType] = useState();
 
   const [showForm, setShowForm] = useState(true);
+
   const [showDetails, setShowDetails] = useState(false);
+
   const [transactionDetails, setTransactionDetails] = useState({});
 
   const handleInputChange = (event) => {
@@ -30,7 +37,7 @@ export default function Submit() {
       transactionHash: transactionHash,
     };
 
-    axios.post("/track-transaction", data).then((response) => {
+    instance.post("/track-transaction", data).then((response) => {
       console.log(response.data);
       const transactionData = {};
       transactionData["data"] = response.data;
@@ -73,37 +80,10 @@ export default function Submit() {
         </div>
       )}
       {showDetails && (
-        <>
-          <div id="details-container">
-            <div id="details-heading">
-              <h6>Transaction Details</h6>
-              <h6>{transactionDetails.data.transaction[0].hash}</h6>
-              <button>Edit</button>
-              <button>Delete</button>
-            </div>
-            <span>
-              {transactionDetails.data.transaction[0].txValue.date} |{" "}
-              {transactionDetails.data.transaction[0].transactionType} |{" "}
-              {transactionDetails.data.transaction[0].qty} |{" "}
-              {transactionDetails.data.transaction[0].network} |{" "}
-              {transactionDetails.data.transaction[0].txValue.value} |{" "}
-              {transactionDetails.data.transaction[0].currentValue.value} |
-              {(transactionDetails.data.stats.unrealisedGL * 100).toFixed(2)}%
-            </span>
-            <div id="graph">
-              <IndivGraph
-                txValue={transactionDetails.data.transaction[0].txValue.value}
-                curValue={
-                  transactionDetails.data.transaction[0].currentValue.value
-                }
-                txDate={transactionDetails.data.transaction[0].txValue.date}
-                curDate={
-                  transactionDetails.data.transaction[0].currentValue.date
-                }
-              />
-            </div>
-          </div>
-        </>
+        <ShowOne
+          transactionDetails={transactionDetails}
+          setSubmit={setSubmit}
+        />
       )}
     </div>
   );
