@@ -1,31 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { OverallGraph } from "./graph.jsx";
+import FilterView from "./filter.jsx";
 import axios from "axios";
 
-const instance = axios.create({
-  baseURL: "http://localhost:3001",
-});
+import { instance } from "../connection/my-axios.mjs";
 
-export default function ShowAll() {
+export default function ShowAll({ token }) {
+  console.log("token", token);
   const [allTransactionDetails, setAllTransactionDetails] = useState([]);
   const [statDetails, setStatDetails] = useState([]);
   const [showTransactions, setShowTransactions] = useState(false);
   useEffect(() => {
-    instance.get("/all-transactions").then((response) => {
-      console.log(response.data, "ran");
-      setAllTransactionDetails(response.data.transaction);
-      setStatDetails(response.data.stats);
-      console.log(allTransactionDetails);
-      setShowTransactions(true);
-    });
+    axios
+      .get("/all-transactions", {
+        params: { token },
+      })
+      .then((response) => {
+        console.log(response.data, "ran");
+        setAllTransactionDetails(response.data.transaction);
+        setStatDetails(response.data.stats);
+        console.log(allTransactionDetails);
+        setShowTransactions(true);
+      });
   }, []);
 
   function showOne(id) {
     console.log(id, " id");
     // instance
-    //   .get("/view-transaction", { id /** , token*/ })
+    //   .get("/view-transaction", { params: { token, id } })
     //   .then((response) => console.log(response));
   }
+
+  const [filter, setFilter] = useState(null);
+
+  const handleChange = (event) => {
+    setFilter(event.target.value);
+    console.log(filter);
+  };
 
   return (
     <div>
@@ -42,6 +53,20 @@ export default function ShowAll() {
               Sale Oulay: {statDetails.saleoutlay} | Actual Rev:{" "}
               {statDetails.actualrev} | Actual G/L: {statDetails.actualgl}
             </div>
+          </div>
+          <div id="filter">
+            <select name="filter" onChange={handleChange}>
+              <option name="filterby" value="">
+                ---FilterBy---
+              </option>
+              <option name="network" value="network">
+                network
+              </option>
+              <option name="date" value="date">
+                date
+              </option>
+            </select>
+            <FilterView filter={filter} />
           </div>
           <div id="transaction-container">
             {allTransactionDetails.map((detail) => {

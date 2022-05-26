@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { instance } from "../connection/my-axios.mjs";
 
-export function Login({ setAuthorized, setToken }) {
+export function Login({ setAuthorized, setToken, setUsername }) {
   const [login, setLogin] = useState(true);
   const [create, setCreate] = useState(false);
 
@@ -34,6 +34,7 @@ export function Login({ setAuthorized, setToken }) {
       );
       console.log(`Setting state: Token`);
       setToken(token);
+      setUsername(username);
     } catch (err) {
       console.log("something wrong login request to server");
     }

@@ -8,6 +8,7 @@ import axios from "axios";
 
 export default function App() {
   const [authorized, setAuthorized] = useState(false);
+  const [username, setUsername] = useState(null);
   const [submit, setSubmit] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
@@ -28,12 +29,19 @@ export default function App() {
   };
   return (
     <div>
-      {!token && <Login setAuthorized={setAuthorized} setToken={setToken} />}
+      {!token && (
+        <Login
+          setAuthorized={setAuthorized}
+          setToken={setToken}
+          setUsername={setUsername}
+        />
+      )}
       {token && (
         <div>
           <button onClick={() => submitRecord()}>Submit a record</button>
           <button onClick={() => showRecords()}>Show all records</button>
           <button onClick={() => showRecords()}>Saved views</button>
+          {username && <span>{username}</span>}
           <button onClick={() => logout()}>Logout</button>
 
           {submit && (
@@ -42,7 +50,7 @@ export default function App() {
               <Submit token={token} setSubmit={setSubmit} />
             </>
           )}
-          {showAll && <ShowAll />}
+          {showAll && <ShowAll token={token} />}
         </div>
       )}
     </div>
