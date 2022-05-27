@@ -19,9 +19,9 @@ export default function FilterView({ filter }) {
   };
 
   function submitFilter() {
-    if (filter === "date") {
+    if (filter === "Date") {
       console.log(startDate, endDate, "date filter");
-    } else if (filter === "network") {
+    } else if (filter === "Network") {
       console.log(network, "network filter");
     }
 
@@ -41,7 +41,7 @@ export default function FilterView({ filter }) {
 
   return (
     <div id="filter2-container">
-      {filter === "date" && (
+      {filter === "Date" && (
         <div id="datefilter">
           from:
           <DatePicker onChange={setStartDate} value={startDate} />
@@ -54,7 +54,7 @@ export default function FilterView({ filter }) {
           <button onClick={submitFilter}>Submit</button>
         </div>
       )}
-      {filter === "network" && (
+      {filter === "Network" && (
         <div id="networkfilter">
           <select
             name="filter"

@@ -11,24 +11,24 @@ export default function ShowAll({ token }) {
   const [statDetails, setStatDetails] = useState([]);
   const [showTransactions, setShowTransactions] = useState(false);
   useEffect(() => {
-    axios
+    instance
       .get("/all-transactions", {
         params: { token },
       })
       .then((response) => {
         console.log(response.data, "ran");
-        setAllTransactionDetails(response.data.transaction);
+        setAllTransactionDetails(response.data.transactions);
         setStatDetails(response.data.stats);
         console.log(allTransactionDetails);
         setShowTransactions(true);
       });
   }, []);
 
-  function showOne(id) {
-    console.log(id, " id");
-    // instance
-    //   .get("/view-transaction", { params: { token, id } })
-    //   .then((response) => console.log(response));
+  function showOne(dbtransactionId) {
+    console.log(dbtransactionId, " id");
+    instance
+      .get("/get-transaction", { params: { token, dbtransactionId } })
+      .then((response) => console.log(response));
   }
 
   const [filter, setFilter] = useState(null);
@@ -48,7 +48,8 @@ export default function ShowAll({ token }) {
               <div>
                 Outlay TD: {statDetails.outlay} | Unrealised Rev:{" "}
                 {statDetails.unrealrev} | Unrealised G/L:{" "}
-                {statDetails.unrealgl.toFixed(2)}%
+                {/* {statDetails.unrealgl.toFixed(2)}% */}
+                {statDetails.unrealgl}%
               </div>
               <div>
                 Sale Oulay: {statDetails.saleoutlay} | Actual Rev:{" "}
@@ -60,10 +61,10 @@ export default function ShowAll({ token }) {
                 <option name="filterby" value="">
                   ---FilterBy---
                 </option>
-                <option name="network" value="network">
+                <option name="network" value="Network">
                   network
                 </option>
-                <option name="date" value="date">
+                <option name="date" value="Date">
                   date
                 </option>
               </select>

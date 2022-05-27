@@ -82,6 +82,7 @@ export default function Submit({ setSubmit, token }) {
         <ShowOne
           transactionDetails={transactionDetails}
           setSubmit={setSubmit}
+          token={token}
         />
       )}
     </div>
