@@ -11,8 +11,10 @@ export default function ShowAll({ token, transactionDetails, setTransactionDetai
   console.log("token", token);
   const [allTransactionDetails, setAllTransactionDetails] = useState([]);
   const [statDetails, setStatDetails] = useState([]);
+  const [isFiltered, setIsFiltered] = useState(false)
   
   useEffect(() => {
+    console.log('ran use effect')
     instance
       .get("/all-transactions", {
         params: { token },
@@ -24,7 +26,7 @@ export default function ShowAll({ token, transactionDetails, setTransactionDetai
         console.log(allTransactionDetails);
         setDisplay('showall')
       });
-  }, []);
+  }, [isFiltered]);
 
   function showOne(dbtransactionId) {
     console.log(dbtransactionId, " id");
@@ -78,7 +80,7 @@ export default function ShowAll({ token, transactionDetails, setTransactionDetai
                   date
                 </option>
               </select>
-              <FilterView filter={filter} />
+              <FilterView filter={filter} setIsFiltered={setIsFiltered} token={token} allTransactionDetails={allTransactionDetails}/>
             </div>
             <div id="transaction-container">
               {allTransactionDetails.map((detail) => {

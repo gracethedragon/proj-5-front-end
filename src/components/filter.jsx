@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-
+import { instance } from "../connection/my-axios.mjs";
 import DatePicker from "react-date-picker";
 
-import axios from "axios";
-
-export default function FilterView({ filter }) {
+export default function FilterView({ filter, setIsFiltered, token, allTransactionDetails }) {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [network, setNetwork] = useState("");
   const [showSaveView, setShowSaveView] = useState(false);
   const [viewSaved, setViewSaved] = useState(false);
+
+  const [transactionIds, setTransactionIds] = useState([])
 
   const handleChange = (event) => {
     setNetwork(event.target.value);
@@ -19,20 +19,36 @@ export default function FilterView({ filter }) {
   };
 
   function submitFilter() {
+    const parameters = {}
     if (filter === "Date") {
       console.log(startDate, endDate, "date filter");
+      parameters["start"] = startDate
+      parameters["end"] = endDate
     } else if (filter === "Network") {
+      parameters["network"] = network
       console.log(network, "network filter");
     }
-
-    // axios
-    // .get("/all-transactions")
+    instance
+      .get("/all-transactions", {params:{ token, filterBy:{column: filter, parameters}}})
+      .then((response)=>{
+        setIsFiltered(true)
+        console.log('response', response)
+        setTransactionIds(response.data.transactions.map((transaction)=> transaction.id))
+        console.log(transactionIds,'saved txn details')
+      })
     setShowSaveView(true);
   }
+
   function saveView() {
     console.log("view saved");
-    setShowSaveView(false);
-    setViewSaved("View Saved!");
+    console.log(transactionIds,'saved txn details')
+    instance
+    .post("/new-view", {params:{token, transactionIds}})
+    .then((response)=>{
+      setShowSaveView(false);
+      setViewSaved("View Saved!");
+      console.log(response)
+    })
   }
 
   useEffect(() => {

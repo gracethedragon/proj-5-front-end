@@ -5,6 +5,7 @@ import ShowOne from "./showone.jsx";
 import axios from "axios";
 
 import { instance } from "../connection/my-axios.mjs";
+import ShowOneView from "./showoneview.jsx";
 
 
 export default function ShowAllViews({ token, transactionDetails, setTransactionDetails, setDisplay, display}) {
@@ -14,42 +15,43 @@ export default function ShowAllViews({ token, transactionDetails, setTransaction
   const [allViewDetails, setAllViewDetails] = useState([])
   
   useEffect(() => {
-    instance
+    console.log('running use effect')
+    axios
       .get("/all-views", {
         params: { token },
       })
       .then((response) => {
         console.log(response.data, "ran");
-        setAllViewDetails(response.data);
-        setDisplay('showallviews')
+        setAllViewDetails(response.data.views);
+        // setDisplay('showallviews')
       });
   }, []);
 
-  function showOne(dbtransactionId) {
-    console.log(dbtransactionId, " id");
-    instance
-      .get("/get-transaction", { params: { token, dbtransactionId } })
+  function showOne(viewId) {
+    console.log(viewId, " id");
+    axios
+      .get("/get-view", { params: { token, viewId } })
       .then((response) => {
         console.log(response.data,'response')
         const { transactions, stats } = response.data;
         const transactionData = { transactions, stats };
-        console.log(transactionDetails ,'txn deets')
+        console.log(transactionData ,'txn deets')
         setTransactionDetails({ transactions, stats });
-        setDisplay("showone");
-        console.log(transactionDetails)
+        setDisplay("showoneview");
+        
       });
   }
 
 
   return (
     <div id="content-container">
-      {display === "showallviews" && 
+      {(allViewDetails !== null) && (display ==="showallviews") && 
         <>
           <div id="details-container">
             
             <div id="views-container">
               <h6>Saved views</h6>
-              {/* {allViewDetails.map((view) => {
+              {allViewDetails.map((view) => {
                 return (
                   <div key={view.id} className="view">
                     <span onClick={()=>showOne(view.id)}>
@@ -57,7 +59,7 @@ export default function ShowAllViews({ token, transactionDetails, setTransaction
                     </span>
                   </div>
                 );
-              })} */}
+              })}
             </div>
           </div>
          
@@ -65,5 +67,6 @@ export default function ShowAllViews({ token, transactionDetails, setTransaction
       }
      
     </div>
+    
   );
 }

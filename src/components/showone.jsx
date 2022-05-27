@@ -4,7 +4,7 @@ import { IndivGraph } from "./graph.jsx";
 import { instance } from "../connection/my-axios.mjs";
 
 
-export default function ShowOne({ transactionDetails, token , setDisplay }) {
+export default function ShowOne({ transactionDetails, token , setDisplay, display }) {
   
 
   function deleteTransaction(dbtransactionId) {
@@ -16,6 +16,7 @@ export default function ShowOne({ transactionDetails, token , setDisplay }) {
       );
   }
   return (
+    
     <div id="single-details-container">
       <div id="details">
         <h6>Transaction Details</h6>

@@ -5,6 +5,7 @@ import ShowOne from "./components/showone.jsx";
 import ShowAllViews from "./components/showallviews.jsx";
 import { Login } from "./components/login.jsx";
 import axios from "axios";
+import ShowOneView from "./components/showoneview.jsx";
 
 //One ether = 1,000,000,000,000,000,000 wei
 
@@ -38,12 +39,17 @@ export default function App() {
     setShowAll(false);
   };
   const showRecords = () => {
+    setDisplay("showall")
     setShowAll(true);
+    setShowAllViews(false);
     setSubmit(false);
   };
 
   const showViews = () => {
+    setDisplay("showallviews")
+    console.log(display, showAllViews, showAll)
     setShowAllViews(true);
+    setShowAll(false);
     setSubmit(false);
   };
   const logout = () => {
@@ -77,18 +83,31 @@ export default function App() {
             token={token} setSubmit={setSubmit} setDisplay={setDisplay} display={display} setTransactionDetails={setTransactionDetails}transactionDetails={transactionDetails} 
             />
           )}
+          
+          {showAll && 
+            <ShowAll token={token} setDisplay={setDisplay} display={display} setTransactionDetails={setTransactionDetails} />}
+
           {display === "showone" &&
             <ShowOne
             transactionDetails={transactionDetails}
             token={token}
             setDisplay = {setDisplay}
+            displa ={display}
             />
           }
-          {showAll && 
-            <ShowAll token={token} setDisplay={setDisplay} display={display} setTransactionDetails={setTransactionDetails} />}
 
           {showAllViews && 
-            <ShowAllViews token={token} setDisplay={setDisplay} display={display} setTransactionDetails={setTransactionDetails} />}
+            <ShowAllViews token={token} setDisplay={setDisplay} display={display} setTransactionDetails={setTransactionDetails} />
+          }
+          {display ==="showoneview" &&
+            <ShowOneView
+              transactionDetails={transactionDetails}
+              setTransactionDetails={setTransactionDetails}
+              token={token}
+              setDisplay={setDisplay}
+              display={display}
+              setShowAllViews={setShowAllViews}/>
+          }
         </>
       )}
     </div>
