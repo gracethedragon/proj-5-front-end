@@ -3,17 +3,15 @@ import { IndivGraph } from "./graph.jsx";
 import ShowOne from "./showone.jsx";
 import { instance } from "../connection/my-axios.mjs";
 
-export default function Submit({ setSubmit, token }) {
+export default function Submit({ setSubmit, token, display, setDisplay ,setTransactionDetails, transactionDetails}) {
+  
   const [transactionHash, setTransactionHash] = useState();
   const [transactionType, setTransactionType] = useState();
 
-  const [showFormTrueDetailsFalse, setShowFormTrueDetailsFalse] =
-    useState(true);
-
-  const [transactionDetails, setTransactionDetails] = useState({
-    transactions: [],
-    stats: {},
-  });
+  // const [transactionDetails, setTransactionDetails] = useState({
+  //   transactions: [],
+  //   stats: {},
+  // });
 
   const handleInputChange = (event) => {
     if (event.target.name == "transactionHash") {
@@ -43,14 +41,14 @@ export default function Submit({ setSubmit, token }) {
       const transactionData = { transactions, stats };
 
       setTransactionDetails(transactionData);
-      setShowFormTrueDetailsFalse(false);
+      setDisplay("showone");
       console.log(transactionDetails);
     });
   }
 
   return (
     <div id="container">
-      {showFormTrueDetailsFalse ? (
+      {display === "form" && 
         <div id="form-container">
           <form onSubmit={(e) => record(e)}>
             <label>Transaction Hash</label>
@@ -78,13 +76,14 @@ export default function Submit({ setSubmit, token }) {
             <input type="submit" value="submit" />
           </form>
         </div>
-      ) : (
+        }
+        {/* {display === "showone" &&
         <ShowOne
           transactionDetails={transactionDetails}
-          setSubmit={setSubmit}
           token={token}
+          setDisplay = {setDisplay}
         />
-      )}
+        } */}
     </div>
   );
 }

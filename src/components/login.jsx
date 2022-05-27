@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { instance } from "../connection/my-axios.mjs";
 
-export function Login({ setAuthorized, setToken, setUsername }) {
+export function Login({ setToken, setUsername }) {
   const [login, setLogin] = useState(true);
   const [create, setCreate] = useState(false);
 
@@ -19,7 +19,7 @@ export function Login({ setAuthorized, setToken, setUsername }) {
   };
   async function checkLogin(e) {
     e.preventDefault();
-    setAuthorized(true);
+    
     console.log("login");
 
     try {
