@@ -29,6 +29,15 @@ export default function ShowOneView({ token, transactionDetails, setTransactionD
       });
   }
 
+  function deleteView(viewId) {
+    instance
+    .delete("/view", {params: {token, viewId}})
+    .then((response)=>{
+      console.log(response,'response')
+      setDisplay("showallviews")
+    })
+  }
+
 
   return (
     <div id="content-container">
@@ -39,7 +48,7 @@ export default function ShowOneView({ token, transactionDetails, setTransactionD
               <h6>View portfolio to date</h6>
               <div>
                 <button>Edit View Name</button>
-                <button>Delete View</button>
+                <button onClick={deleteView(1)}>Delete View</button>
               </div>
               <div>
                 Outlay TD: {transactionDetails.stats.outlay} | Unrealised Rev:{" "}
