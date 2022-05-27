@@ -40,9 +40,9 @@ export default function FilterView({ filter }) {
   }, [filter, startDate, endDate, network]);
 
   return (
-    <div>
+    <div id="filter2-container">
       {filter === "date" && (
-        <div>
+        <div id="datefilter">
           from:
           <DatePicker onChange={setStartDate} value={startDate} />
           to:
@@ -55,7 +55,7 @@ export default function FilterView({ filter }) {
         </div>
       )}
       {filter === "network" && (
-        <div>
+        <div id="networkfilter">
           <select
             name="filter"
             onChange={handleChange}

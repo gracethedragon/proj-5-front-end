@@ -1,7 +1,30 @@
 body {
   background-color: pink;
+  padding: 10px 20px;
+  text-align: center;
 }
 
+#summary-container,
+#filter-container,
+#transaction-container,
+#form-container,
+#details {
+  margin: 15px 0px;
+}
+
+#content-container,
+#button-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+#button-container button {
+  margin: 0px 5px;
+}
+
+#details-container,
 #graph {
-  padding: 10%;
+  width: 50%;
+  margin: auto;
 }

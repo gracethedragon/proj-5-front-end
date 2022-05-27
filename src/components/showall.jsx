@@ -39,47 +39,49 @@ export default function ShowAll({ token }) {
   };
 
   return (
-    <div>
-      <h6>Portfolio to date</h6>
+    <div id="content-container">
       {showTransactions && (
         <>
-          <div id="summary-container">
-            <div>
-              Outlay TD: {statDetails.outlay} | Unrealised Rev:{" "}
-              {statDetails.unrealrev} | Unrealised G/L:{" "}
-              {statDetails.unrealgl.toFixed(2)}%
+          <div id="details-container">
+            <div id="summary-container">
+              <h6>Portfolio to date</h6>
+              <div>
+                Outlay TD: {statDetails.outlay} | Unrealised Rev:{" "}
+                {statDetails.unrealrev} | Unrealised G/L:{" "}
+                {statDetails.unrealgl.toFixed(2)}%
+              </div>
+              <div>
+                Sale Oulay: {statDetails.saleoutlay} | Actual Rev:{" "}
+                {statDetails.actualrev} | Actual G/L: {statDetails.actualgl}
+              </div>
             </div>
-            <div>
-              Sale Oulay: {statDetails.saleoutlay} | Actual Rev:{" "}
-              {statDetails.actualrev} | Actual G/L: {statDetails.actualgl}
+            <div id="filter">
+              <select name="filter" onChange={handleChange}>
+                <option name="filterby" value="">
+                  ---FilterBy---
+                </option>
+                <option name="network" value="network">
+                  network
+                </option>
+                <option name="date" value="date">
+                  date
+                </option>
+              </select>
+              <FilterView filter={filter} />
             </div>
-          </div>
-          <div id="filter">
-            <select name="filter" onChange={handleChange}>
-              <option name="filterby" value="">
-                ---FilterBy---
-              </option>
-              <option name="network" value="network">
-                network
-              </option>
-              <option name="date" value="date">
-                date
-              </option>
-            </select>
-            <FilterView filter={filter} />
-          </div>
-          <div id="transaction-container">
-            {allTransactionDetails.map((detail) => {
-              return (
-                <div key={detail.id} className="transaction">
-                  <span onClick={() => showOne(detail.id)}>
-                    {detail.txValue.date} | {detail.transactionType} |{" "}
-                    {detail.qty} | {detail.network} | {detail.txValue.value} |{" "}
-                    {detail.currentValue.value} |
-                  </span>
-                </div>
-              );
-            })}
+            <div id="transaction-container">
+              {allTransactionDetails.map((detail) => {
+                return (
+                  <div key={detail.id} className="transaction">
+                    <span onClick={() => showOne(detail.id)}>
+                      {detail.txValue.date} | {detail.transactionType} |{" "}
+                      {detail.qty} | {detail.network} | {detail.txValue.value} |{" "}
+                      {detail.currentValue.value} |
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
           <div id="graph">
             <OverallGraph

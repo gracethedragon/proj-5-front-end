@@ -7,7 +7,7 @@ export default function Submit({ setSubmit, token }) {
   const [transactionHash, setTransactionHash] = useState();
   const [transactionType, setTransactionType] = useState();
 
-  const [showFormIfTrueElseDetails, setShowFormIfTrueElseDetails] =
+  const [showFormTrueDetailsFalse, setShowFormTrueDetailsFalse] =
     useState(true);
 
   const [transactionDetails, setTransactionDetails] = useState({
@@ -43,14 +43,14 @@ export default function Submit({ setSubmit, token }) {
       const transactionData = { transactions, stats };
 
       setTransactionDetails(transactionData);
+      setShowFormTrueDetailsFalse(false);
       console.log(transactionDetails);
-      setShowFormIfTrueElseDetails(false);
     });
   }
 
   return (
     <div id="container">
-      {showFormIfTrueElseDetails ? (
+      {showFormTrueDetailsFalse ? (
         <div id="form-container">
           <form onSubmit={(e) => record(e)}>
             <label>Transaction Hash</label>

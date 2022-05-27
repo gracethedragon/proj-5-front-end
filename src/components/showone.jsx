@@ -4,14 +4,15 @@ import { IndivGraph } from "./graph.jsx";
 import { instance } from "../connection/my-axios.mjs";
 
 export default function ShowOne({ transactionDetails, setSubmit }) {
+  setSubmit(true);
   function deleteTransaction(id) {
     console.log(id, "id");
-    setSubmit(false);
+
     // instance.delete("/").then((respones) => console.log(response));
   }
   return (
-    <div id="details-container">
-      <div id="details-heading">
+    <div id="single-details-container">
+      <div id="details">
         <h6>Transaction Details</h6>
         <h6>{transactionDetails.transactions[0].hash}</h6>
         <button
@@ -20,9 +21,8 @@ export default function ShowOne({ transactionDetails, setSubmit }) {
           }
         >
           Delete
-        </button>
-      </div>
-      <span>
+        </button>{" "}
+        <br />
         {transactionDetails.transactions[0].txValue.date} |{" "}
         {transactionDetails.transactions[0].transactionType} |{" "}
         {transactionDetails.transactions[0].qty} |{" "}
@@ -30,7 +30,7 @@ export default function ShowOne({ transactionDetails, setSubmit }) {
         {transactionDetails.transactions[0].txValue.value} |{" "}
         {transactionDetails.transactions[0].currentValue.value} |
         {(transactionDetails.stats.unrealgl * 100).toFixed(2)}%
-      </span>
+      </div>
       <div id="graph">
         <IndivGraph
           txValue={transactionDetails.transactions[0].txValue.value}

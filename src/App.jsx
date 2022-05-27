@@ -37,21 +37,24 @@ export default function App() {
         />
       )}
       {token && (
-        <div>
-          <button onClick={() => submitRecord()}>Submit a record</button>
-          <button onClick={() => showRecords()}>Show all records</button>
-          <button onClick={() => showRecords()}>Saved views</button>
-          {username && <span>{username}</span>}
-          <button onClick={() => logout()}>Logout</button>
+        <>
+          <div id="button-container">
+            <div id="buttonleft">
+              <button onClick={() => submitRecord()}>Submit a record</button>
+              <button onClick={() => showRecords()}>Show all records</button>
+              <button onClick={() => showRecords()}>Saved views</button>
+            </div>
+            <div id="buttonright">
+              {username && <span>{username}</span>}
+              <button onClick={() => logout()}>Logout</button>
+            </div>
+          </div>
 
           {submit && (
-            <>
-              <div>form</div>
-              <Submit token={token} setSubmit={setSubmit} />
-            </>
+            <Submit token={token} setSubmit={setSubmit} submit={submit} />
           )}
           {showAll && <ShowAll token={token} />}
-        </div>
+        </>
       )}
     </div>
   );
