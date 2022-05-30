@@ -7,20 +7,29 @@ export default function FilterView({
   setIsFiltered,
   token,
   allTransactionDetails,
+  setNoResults
 }) {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [network, setNetwork] = useState("");
   const [showSaveView, setShowSaveView] = useState(false);
   const [viewSaved, setViewSaved] = useState(false);
+  const [viewname, setViewname] = useState("default viewname")
+
 
   const [transactionIds, setTransactionIds] = useState([]);
 
   const handleChange = (event) => {
-    setNetwork(event.target.value);
-    setShowSaveView(false);
-    setViewSaved(false);
-    console.log(network);
+    if(event.target.name === "filter"){
+      setNetwork(event.target.value);
+      setShowSaveView(false);
+      setViewSaved(false);
+      console.log(network);
+    }
+
+    if(event.target.name === "viewname") {
+      setViewname(event.target.value)
+    }
   };
 
   function submitFilter() {
@@ -37,20 +46,31 @@ export default function FilterView({
         params: { token, filterBy: { column: filter, parameters } },
       })
       .then((response) => {
-        setIsFiltered(true);
+        
         console.log("response", response);
-        setTransactionIds(
-          response.data.transactions.map((transaction) => transaction.id)
-        );
-        console.log(transactionIds, "saved txn details");
+        if(response.data.transactions.length === 0){
+          console.log('no results')
+          setNoResults(true)
+          setTransactionIds("")
+          
+        } else {
+          setNoResults(false)
+          setIsFiltered(true);
+          setTransactionIds(
+            response.data.transactions.map((transaction) => transaction.id)
+          );
+          console.log(transactionIds, "saved txn details");
+          setShowSaveView(true);
+        }
       });
-    setShowSaveView(true);
+    
   }
 
   function saveView() {
     console.log("view saved");
     console.log(transactionIds, "saved txn details");
-    instance.post("/new-view", { token, transactionIds }).then((response) => {
+    console.log(viewname);
+    instance.post("/new-view", { token, transactionIds, viewname }).then((response) => {
       setShowSaveView(false);
       setViewSaved("View Saved!");
       console.log(response);
@@ -80,7 +100,7 @@ export default function FilterView({
         <div id="networkfilter">
           <select
             name="filter"
-            onChange={handleChange}
+            onChange={(event)=>handleChange(event)}
             defaultValue={""}
             required
           >
@@ -93,10 +113,16 @@ export default function FilterView({
             <option name="BTC" value="BTC">
               BTC
             </option>
-          </select>
+          </select> <br/>
+          <input
+            type="text"
+            name="viewname"
+            placeholder = "viewname"
+            onChange={(event)=>handleChange(event)} />
           <button onClick={submitFilter}>Submit</button>
         </div>
       )}
+      
       {showSaveView === true && <button onClick={saveView}>Save View</button>}
       {viewSaved === "View Saved!" && <span>{viewSaved}</span>}
     </div>

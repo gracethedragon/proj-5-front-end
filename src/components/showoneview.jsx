@@ -15,6 +15,9 @@ export default function ShowOneView({
   display,
   setShowAllViews,
 }) {
+
+  const [editViewname, setEditViewname] = useState(false)
+  const [editedViewname, setEditedViewname] = useState(null)
   useEffect(() => {
     console.log("ran use effect", transactionDetails, display);
   }, []);
@@ -40,6 +43,18 @@ export default function ShowOneView({
       setDisplay("showallviews");
     });
   }
+  function handleChange(e){
+    if(e.target.name === "viewname") {
+      setEditedViewname(e.target.value)
+      console.log(editedViewname)
+    }
+    
+  }
+  function edit(e){
+    e.preventDefault()
+    // instance.put("/")
+    
+  }
 
   return (
     <div id="content-container">
@@ -47,9 +62,20 @@ export default function ShowOneView({
         <>
           <div id="details-container">
             <div id="summary-container">
-              <h6>View portfolio to date</h6>
+              <h6> View portfolio to date</h6>
               <div>
-                <button>Edit View Name</button>
+                <button onClick={()=> setEditViewname(true)}>Edit Viewname</button>
+                {editViewname &&
+                <form onSubmit={(e)=>edit(e)}>
+                <input
+                  type="text"
+                  name="viewname"
+                  defaultValue = {viewId.viewname}
+                  onChange={(e)=>handleChange(e)}
+                />
+                <button type="submit">Edit</button>
+                </form>
+                }
                 <button onClick={() => deleteView(viewId)}>Delete View</button>
               </div>
               <div>

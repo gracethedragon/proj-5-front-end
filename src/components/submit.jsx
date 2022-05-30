@@ -13,11 +13,8 @@ export default function Submit({
 }) {
   const [transactionHash, setTransactionHash] = useState();
   const [transactionType, setTransactionType] = useState();
-
-  // const [transactionDetails, setTransactionDetails] = useState({
-  //   transactions: [],
-  //   stats: {},
-  // });
+  const [cost, setCost] = useState(null)
+ 
 
   const handleInputChange = (event) => {
     if (event.target.name == "transactionHash") {
@@ -26,9 +23,20 @@ export default function Submit({
 
     if (event.target.name == "transactionType") {
       setTransactionType(event.target.value);
+      if(event.target.value === "SELL") {
+        setCost(true)
+      } else {
+        setCost(null)
+      }
     }
 
-    console.log(transactionHash, transactionType);
+    if(event.target.name === "cost") {
+      setCost(event.target.value)
+    }
+
+    
+
+    console.log(transactionHash, transactionType, cost);
   };
 
   function record(e) {
@@ -38,6 +46,7 @@ export default function Submit({
       token,
       transactionType: transactionType,
       transactionHash: transactionHash,
+      unitCostPrice: cost,
     };
 
     instance.post("/track-transaction", data).then((response) => {
@@ -75,21 +84,23 @@ export default function Submit({
               </option>
               <option value="SELL">sell</option>
               <option value="BUY">buy</option>
-              <option value="TRANSFER-IN">transfer in</option>
-              <option value="TRANSFER-OUT">transfer out</option>
             </select>{" "}
             <br />
+            {cost &&
+            <div>
+            <label>Transaction Cost (unit)</label>
+            <input 
+              type="number"
+              name="cost"
+              onChange={(event)=>handleInputChange(event)}
+            /> <br/>
+            </div>
+            }
             <input type="submit" value="submit" />
           </form>
         </div>
       )}
-      {/* {display === "showone" &&
-        <ShowOne
-          transactionDetails={transactionDetails}
-          token={token}
-          setDisplay = {setDisplay}
-        />
-        } */}
+     
     </div>
   );
 }
