@@ -6,49 +6,51 @@ import axios from "axios";
 
 import { instance } from "../connection/my-axios.mjs";
 
-
-export default function ShowOneView({ token, transactionDetails, setTransactionDetails, setDisplay, display, setShowAllViews}) {
-  
-  
+export default function ShowOneView({
+  viewId,
+  token,
+  transactionDetails,
+  setTransactionDetails,
+  setDisplay,
+  display,
+  setShowAllViews,
+}) {
   useEffect(() => {
-    console.log('ran use effect', transactionDetails, display)
+    console.log("ran use effect", transactionDetails, display);
   }, []);
 
   function showOne(dbtransactionId) {
     console.log(dbtransactionId, " id");
     instance
-      .get("/get-transaction", { params: { token, dbtransactionId:42 } })
+      .get("/get-transaction", { params: { token, dbtransactionId } })
       .then((response) => {
-        console.log(response.data,'response')
+        console.log(response.data, "response");
         const { transactions, stats } = response.data;
         const transactionData = { transactions, stats };
-        console.log(transactionData ,'txn deets')
-        setTransactionDetails( {transactions, stats });
+        console.log(transactionData, "txn deets");
+        setTransactionDetails({ transactions, stats });
         setDisplay("showone");
-        console.log(transactionDetails)
+        console.log(transactionDetails);
       });
   }
 
   function deleteView(viewId) {
-    instance
-    .delete("/view", {params: {token, viewId}})
-    .then((response)=>{
-      console.log(response,'response')
-      setDisplay("showallviews")
-    })
+    instance.delete("/view", { params: { token, viewId } }).then((response) => {
+      console.log(response, "response");
+      setDisplay("showallviews");
+    });
   }
-
 
   return (
     <div id="content-container">
-      {display === "showoneview" && 
+      {display === "showoneview" && (
         <>
           <div id="details-container">
             <div id="summary-container">
               <h6>View portfolio to date</h6>
               <div>
                 <button>Edit View Name</button>
-                <button onClick={deleteView(1)}>Delete View</button>
+                <button onClick={() => deleteView(viewId)}>Delete View</button>
               </div>
               <div>
                 Outlay TD: {transactionDetails.stats.outlay} | Unrealised Rev:{" "}
@@ -58,18 +60,20 @@ export default function ShowOneView({ token, transactionDetails, setTransactionD
               </div>
               <div>
                 Sale Oulay: {transactionDetails.stats.saleoutlay} | Actual Rev:{" "}
-                {transactionDetails.stats.actualrev} | Actual G/L: {transactionDetails.stats.actualgl}
+                {transactionDetails.stats.actualrev} | Actual G/L:{" "}
+                {transactionDetails.stats.actualgl}
               </div>
             </div>
-            
+
             <div id="transaction-container">
-              {transactionDetails.transactions.map((detail) => {
+              {transactionDetails.transactions.map((transaction) => {
                 return (
-                  <div key={detail.id} className="transaction">
-                    <span onClick={()=>showOne(detail.id)}>
-                      {detail.txValue.date} | {detail.transactionType} |{" "}
-                      {detail.qty} | {detail.network} | {detail.txValue.value} |{" "}
-                      {detail.currentValue.value} |
+                  <div key={transaction.id} className="transaction">
+                    <span onClick={() => showOne(transaction.id)}>
+                      {transaction.txValue.date} | {transaction.transactionType}{" "}
+                      | {transaction.qty} | {transaction.network} |{" "}
+                      {transaction.txValue.value} |{" "}
+                      {transaction.currentValue.value} |
                     </span>
                   </div>
                 );
@@ -83,9 +87,7 @@ export default function ShowOneView({ token, transactionDetails, setTransactionD
             />
           </div>
         </>
-      }
-      
-      
+      )}
     </div>
   );
 }

@@ -6,15 +6,20 @@ import axios from "axios";
 
 import { instance } from "../connection/my-axios.mjs";
 
-
-export default function ShowAll({ token, transactionDetails, setTransactionDetails, setDisplay, display}) {
+export default function ShowAll({
+  token,
+  transactionDetails,
+  setTransactionDetails,
+  setDisplay,
+  display,
+}) {
   console.log("token", token);
   const [allTransactionDetails, setAllTransactionDetails] = useState([]);
   const [statDetails, setStatDetails] = useState([]);
-  const [isFiltered, setIsFiltered] = useState(false)
-  
+  const [isFiltered, setIsFiltered] = useState(false);
+
   useEffect(() => {
-    console.log('ran use effect')
+    console.log("ran use effect");
     instance
       .get("/all-transactions", {
         params: { token },
@@ -24,7 +29,7 @@ export default function ShowAll({ token, transactionDetails, setTransactionDetai
         setAllTransactionDetails(response.data.transactions);
         setStatDetails(response.data.stats);
         console.log(allTransactionDetails);
-        setDisplay('showall')
+        setDisplay("showall");
       });
   }, [isFiltered]);
 
@@ -33,13 +38,13 @@ export default function ShowAll({ token, transactionDetails, setTransactionDetai
     instance
       .get("/get-transaction", { params: { token, dbtransactionId } })
       .then((response) => {
-        console.log(response.data,'response')
+        console.log(response.data, "response");
         const { transactions, stats } = response.data;
         const transactionData = { transactions, stats };
-        console.log(transactionDetails ,'txn deets')
+        console.log(transactionDetails, "txn deets");
         setTransactionDetails({ transactions, stats });
         setDisplay("showone");
-        console.log(transactionDetails)
+        console.log(transactionDetails);
       });
   }
 
@@ -52,7 +57,7 @@ export default function ShowAll({ token, transactionDetails, setTransactionDetai
 
   return (
     <div id="content-container">
-      {display === "showall" && 
+      {display === "showall" && (
         <>
           <div id="details-container">
             <div id="summary-container">
@@ -80,13 +85,18 @@ export default function ShowAll({ token, transactionDetails, setTransactionDetai
                   date
                 </option>
               </select>
-              <FilterView filter={filter} setIsFiltered={setIsFiltered} token={token} allTransactionDetails={allTransactionDetails}/>
+              <FilterView
+                filter={filter}
+                setIsFiltered={setIsFiltered}
+                token={token}
+                allTransactionDetails={allTransactionDetails}
+              />
             </div>
             <div id="transaction-container">
               {allTransactionDetails.map((detail) => {
                 return (
                   <div key={detail.id} className="transaction">
-                    <span onClick={()=>showOne(detail.id)}>
+                    <span onClick={() => showOne(detail.id)}>
                       {detail.txValue.date} | {detail.transactionType} |{" "}
                       {detail.qty} | {detail.network} | {detail.txValue.value} |{" "}
                       {detail.currentValue.value} |
@@ -103,8 +113,7 @@ export default function ShowAll({ token, transactionDetails, setTransactionDetai
             />
           </div>
         </>
-      }
-      
+      )}
     </div>
   );
 }

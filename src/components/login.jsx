@@ -19,7 +19,7 @@ export function Login({ setToken, setUsername }) {
   };
   async function checkLogin(e) {
     e.preventDefault();
-    
+
     console.log("login");
 
     try {
@@ -43,10 +43,12 @@ export function Login({ setToken, setUsername }) {
   function createAccount() {
     console.log("create account");
     const password2 = password;
+
+    const data = { email, password, password2 };
     console.log(data);
-    // instance
-    //   .post("/register", { email, password, password2 })
-    //   .then((response) => console.log(response, "posted"));
+    instance
+      .post("/register", data)
+      .then((response) => console.log(response, "posted"));
   }
   return (
     <div>
