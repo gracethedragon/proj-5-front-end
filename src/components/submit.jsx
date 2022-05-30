@@ -3,8 +3,14 @@ import { IndivGraph } from "./graph.jsx";
 import ShowOne from "./showone.jsx";
 import { instance } from "../connection/my-axios.mjs";
 
-export default function Submit({ setSubmit, token, display, setDisplay ,setTransactionDetails, transactionDetails}) {
-  
+export default function Submit({
+  setSubmit,
+  token,
+  display,
+  setDisplay,
+  setTransactionDetails,
+  transactionDetails,
+}) {
   const [transactionHash, setTransactionHash] = useState();
   const [transactionType, setTransactionType] = useState();
 
@@ -48,7 +54,7 @@ export default function Submit({ setSubmit, token, display, setDisplay ,setTrans
 
   return (
     <div id="container">
-      {display === "form" && 
+      {display === "form" && (
         <div id="form-container">
           <form onSubmit={(e) => record(e)}>
             <label>Transaction Hash</label>
@@ -76,8 +82,8 @@ export default function Submit({ setSubmit, token, display, setDisplay ,setTrans
             <input type="submit" value="submit" />
           </form>
         </div>
-        }
-        {/* {display === "showone" &&
+      )}
+      {/* {display === "showone" &&
         <ShowOne
           transactionDetails={transactionDetails}
           token={token}

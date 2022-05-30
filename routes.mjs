@@ -73,33 +73,30 @@ export default function routes(app) {
   });
 
   app.get("/all-views", (req, res) => {
-      const response = {
-        views: [
-          {
-            id: 1,
-            viewname: "default viewname",
-            createdDate: new Date(),
-          },
-          {
-            id: 2,
-            viewname: "default viewname 2",
-            createdDate: new Date(),
-          },
-          {
-            id: 3,
-            viewname: "default viewname 3",
-            createdDate: new Date(),
-          },
-        ],
-        
-      };
-      res.send(response);
-    });
-  
+    const response = {
+      views: [
+        {
+          id: 1,
+          viewname: "default viewname",
+          createdDate: new Date(),
+        },
+        {
+          id: 2,
+          viewname: "default viewname 2",
+          createdDate: new Date(),
+        },
+        {
+          id: 3,
+          viewname: "default viewname 3",
+          createdDate: new Date(),
+        },
+      ],
+    };
+    res.send(response);
+  });
 
-     app
-      .get("/get-view", (req,res)=>{
-       const response = {
+  app.get("/get-view", (req, res) => {
+    const response = {
       transactions: [
         {
           id: 1,

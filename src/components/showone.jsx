@@ -3,20 +3,23 @@ import { IndivGraph } from "./graph.jsx";
 
 import { instance } from "../connection/my-axios.mjs";
 
-
-export default function ShowOne({ transactionDetails, token , setDisplay, display }) {
-  
-
+export default function ShowOne({
+  transactionDetails,
+  token,
+  setDisplay,
+  display,
+}) {
   function deleteTransaction(dbtransactionId) {
     console.log(dbtransactionId, "id");
 
-    instance.delete("/transaction", {params: {token, dbtransactionId}}).then((response) => {
-      setDisplay("form")
-      console.log(response)}
-      );
+    instance
+      .delete("/transaction", { params: { token, dbtransactionId } })
+      .then((response) => {
+        setDisplay("form");
+        console.log(response);
+      });
   }
   return (
-    
     <div id="single-details-container">
       <div id="details">
         <h6>Transaction Details</h6>
