@@ -1,7 +1,33 @@
 body {
-  background-color: pink;
+  // background-color: pink;
   padding: 10px 20px;
   text-align: center;
+  background-color: #ffffff;
+  background-image: url("https://www.transparenttextures.com/patterns/bright-squares.png");
+  /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+  // font-family: "Black Ops One";
+
+  font-family: "Viga", sans-serif;
+}
+
+h1 {
+  font-family: "Black Ops One";
+  margin: 10px 0px;
+  font-size: 70px;
+}
+
+#login-container,
+#container {
+  margin: 5% auto;
+}
+
+#form-container input,
+#form-container select {
+  margin: 10px;
+}
+#login-buttons input,
+#create-buttons input {
+  margin: 20px;
 }
 
 #summary-container,
@@ -27,4 +53,39 @@ body {
 #graph {
   width: 50%;
   margin: auto;
+}
+#create-buttons input,
+#login-buttons input,
+#button,
+button {
+  font-family: "Black Ops One";
+  display: inline-block;
+  padding: 0.35em 1.2em;
+  border: 0.1em solid black;
+  // margin: 0 0.3em 0.3em 0;
+  border-radius: 0.12em;
+  box-sizing: border-box;
+  // text-decoration: none;
+  // font-family: "Roboto", sans-serif;
+  // font-weight: 300;
+  color: #000000;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+#create-buttons input:hover,
+#login-buttons input:hover,
+#button:hover,
+button:hover {
+  color: white;
+  background-color: #000000;
+}
+@media all and (max-width: 30em) {
+  #create-buttons input,
+  #login-buttons input,
+  #button,
+  button {
+    display: block;
+    margin: 0.4em auto;
+  }
 }

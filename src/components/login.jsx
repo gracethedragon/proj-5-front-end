@@ -51,12 +51,12 @@ export function Login({ setToken, setUsername }) {
       .then((response) => console.log(response, "posted"));
   }
   return (
-    <div>
+    <div id="login-container">
       <form onSubmit={(e) => checkLogin(e)}>
-        <div id="login-container">
+        
           {login && <h2>Login to your account</h2>}
-          {create && <h2>Create an account</h2>}
-          <label>email</label>
+          {create && <h2>Create your account</h2>}
+          <label>Username</label>
           <br />
           <input
             type="text"
@@ -64,7 +64,7 @@ export function Login({ setToken, setUsername }) {
             onChange={(event) => handleInputChange(event)}
           ></input>
           <br />
-          <label>password</label>
+          <label>Password</label>
           <br />
           <input
             type="text"
@@ -78,13 +78,13 @@ export function Login({ setToken, setUsername }) {
               <input
                 type="button"
                 name="create"
-                value="Create Account"
+                value="Create account"
                 onClick={() => {
                   setCreate(true);
                   setLogin(false);
                 }}
               ></input>
-              <input type="submit" name="login" value="Login"></input>
+              <input type="submit" id="button" name="login" value="Login"></input>
             </div>
           )}
           {create && (
@@ -101,7 +101,7 @@ export function Login({ setToken, setUsername }) {
               <input
                 type="button"
                 name="create"
-                value="Create my account"
+                value="Create account"
                 onClick={() => {
                   createAccount();
                   setCreate(false);
@@ -110,7 +110,7 @@ export function Login({ setToken, setUsername }) {
               ></input>
             </div>
           )}
-        </div>
+        
       </form>
     </div>
   );

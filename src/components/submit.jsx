@@ -66,14 +66,14 @@ export default function Submit({
       {display === "form" && (
         <div id="form-container">
           <form onSubmit={(e) => record(e)}>
-            <label>Transaction Hash</label>
+            <label>Transaction Hash</label><br/>
             <input
               type="text"
               name="transactionHash"
               onChange={(event) => handleInputChange(event)}
             />{" "}
             <br />
-            <label>Transaction Type</label>
+            <label>Transaction Type</label> <br/>
             <select
               name="transactionType"
               defaultValue=""
@@ -82,13 +82,13 @@ export default function Submit({
               <option value="" hidden>
                 ---Choose One---
               </option>
-              <option value="SELL">sell</option>
-              <option value="BUY">buy</option>
+              <option value="SELL">Sell</option>
+              <option value="BUY">Buy</option>
             </select>{" "}
             <br />
             {cost &&
             <div>
-            <label>Transaction Cost (unit)</label>
+            <label>Transaction Cost (unit)</label> <br/>
             <input 
               type="number"
               name="cost"
@@ -96,7 +96,7 @@ export default function Submit({
             /> <br/>
             </div>
             }
-            <input type="submit" value="submit" />
+            <input type="submit" value="submit" id="button" />
           </form>
         </div>
       )}

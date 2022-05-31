@@ -58,7 +58,7 @@ export default function App() {
     setUsername(null);
   };
   return (
-    <div>
+    <div id="body">
       {!token && <Login setToken={setToken} setUsername={setUsername} />}
       {token && (
         <>
