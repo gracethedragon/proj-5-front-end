@@ -6,10 +6,8 @@ export default function FilterView({
   filter,
   setIsFiltered,
   token,
-  setAllTransactionDetails,
-  setNoResults,
-  
-  setParameters
+  allTransactionDetails,
+  setNoResults
 }) {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -35,16 +33,13 @@ export default function FilterView({
   };
 
   function submitFilter() {
-    
     const parameters = [];
     if (filter === "Date") {
       console.log(startDate, endDate, "date filter");
-      setParameters([startDate, endDate]);
-      console.log(parameters)
+      parameters.push(startDate, endDate);
     } else if (filter === "Network") {
-      setParameters([network])
+      parameters.push(network);
       console.log(network, "network filter");
-      console.log(parameters)
     }
     instance
       .get("/all-transactions", {
@@ -61,7 +56,6 @@ export default function FilterView({
         } else {
           setNoResults(false)
           setIsFiltered(true);
-          setAllTransactionDetails(response.data.transactions);
           setTransactionIds(
             response.data.transactions.map((transaction) => transaction.id)
           );
@@ -99,7 +93,7 @@ export default function FilterView({
             onChange={setEndDate}
             value={endDate}
           />
-          <span><button onClick={submitFilter}>Go</button></span>
+          <button onClick={submitFilter}>Submit</button>
         </div>
       )}
       {filter === "Network" && (
@@ -119,13 +113,18 @@ export default function FilterView({
             <option name="BTC" value="BTC">
               BTC
             </option>
-          </select> <button onClick={submitFilter}>Go</button><br/>
-          
+          </select> <br/>
+          <input
+            type="text"
+            name="viewname"
+            placeholder = "viewname"
+            onChange={(event)=>handleChange(event)} />
+          <button onClick={submitFilter}>Submit</button>
         </div>
       )}
       
-      {/* {showSaveView === true && <button onClick={saveView}>Save View</button>}
-      {viewSaved === "View Saved!" && <span>{viewSaved}</span>} */}
+      {showSaveView === true && <button onClick={saveView}>Save View</button>}
+      {viewSaved === "View Saved!" && <span>{viewSaved}</span>}
     </div>
   );
 }

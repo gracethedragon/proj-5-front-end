@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { OverallGraph } from "./graph.jsx";
 import FilterView from "./filter.jsx";
+import moment from "moment";
 import ShowOne from "./showone.jsx";
 import axios from "axios";
 
@@ -19,12 +20,14 @@ export default function ShowAll({
   const [isFiltered, setIsFiltered] = useState(false);
   const [noResults, setNoResults] = useState(false)
   const [checkedTxn, setCheckedTxn] = useState([])
+  const [filter, setFilter] = useState(null);
+  const [parameters ,setParameters] = useState(null)
 
   useEffect(() => {
     console.log("ran use effect");
     instance
       .get("/all-transactions", {
-        params: { token },
+        params: { token, filterBy: { column: filter, parameters }},
       })
       .then((response) => {
         console.log(response.data, "ran");
@@ -34,7 +37,7 @@ export default function ShowAll({
         console.log(allTransactionDetails);
         setDisplay("showall");
       });
-  }, [isFiltered]);
+  }, [parameters]);
 
   function showOne(dbtransactionId) {
     console.log(dbtransactionId, " id");
@@ -51,7 +54,7 @@ export default function ShowAll({
       });
   }
 
-  const [filter, setFilter] = useState(null);
+  
 
   const handleChange = (event) => {
     setFilter(event.target.value);
@@ -68,22 +71,28 @@ export default function ShowAll({
     console.log(checkedTxn)
   }
 
+  function checkAll(){
+    console.log(allTransactionDetails)
+    // setCheckedTxn(transactionDetails.map(transaction=> transaction.id))
+    console.log(checkedTxn)
+  }
+
   return (
     <div id="content-container">
       {display === "showall" && (
         <>
           <div id="details-container">
             <div id="summary-container">
-              <h6>Portfolio to date</h6>
+              <h6 className="details-header">Portfolio to date</h6>
               <div>
                 Outlay TD: {statDetails.outlay} | Unrealised Rev:{" "}
                 {statDetails.unrealrev} | Unrealised G/L:{" "}
-                {/* {statDetails.unrealgl.toFixed(2)}% */}
-                {statDetails.unrealgl}%
+                
+                {(statDetails.unrealgl*100).toFixed(2)}%
               </div>
               <div>
                 Sale Oulay: {statDetails.saleoutlay} | Actual Rev:{" "}
-                {statDetails.actualrev} | Actual G/L: {statDetails.actualgl}
+                {statDetails.actualrev} | Actual G/L: {(statDetails.actualgl*100).toFixed(2)}%
               </div>
             </div>
             <div id="filter">
@@ -102,9 +111,16 @@ export default function ShowAll({
                 filter={filter}
                 setIsFiltered={setIsFiltered}
                 token={token}
-                allTransactionDetails={allTransactionDetails}
+                setAllTransactionDetails={setAllTransactionDetails}
                 setNoResults={setNoResults}
+                
+                setParameters={setParameters}
               />
+              {isFiltered &&
+              <><input type="text" placeholder="viewname"></input>
+              <button>Create View</button>
+              <button onClick={()=>checkAll()}>Select All</button></>
+              }
             </div>
             <div id="transaction-container">
               {noResults && 
@@ -114,11 +130,12 @@ export default function ShowAll({
                 return (
                   <form>
                   <div key={detail.id} className="transaction">
-                    <input type="checkbox" value={detail.id} onClick={()=>addChecked(detail.id)}/>
-                    <span onClick={() => showOne(detail.id)}>
-                      {detail.txValue.date} | {detail.transactionType} |{" "}
-                      {detail.qty} | {detail.network} | {detail.txValue.value} |{" "}
-                      {detail.currentValue.value} |
+                    {isFiltered &&
+                    <input type="checkbox" value={detail.id} onClick={()=>addChecked(detail.id)}/>}
+                    <span className="details" onClick={() => showOne(detail.id)}>
+                      {moment(detail.txValue.date).format("DD/MM/YY")} | {detail.transactionType} |{" "}
+                      {detail.qty} {detail.network} | {((detail.currentValue.value- detail.txValue.value)/detail.currentValue.value*100).toFixed(2)}% 
+                      
                     </span>
                   </div>
                   </form>

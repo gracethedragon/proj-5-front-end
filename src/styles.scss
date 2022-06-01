@@ -4,16 +4,48 @@ body {
   text-align: center;
   background-color: #ffffff;
   background-image: url("https://www.transparenttextures.com/patterns/bright-squares.png");
-  /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
-  // font-family: "Black Ops One";
-
   font-family: "Viga", sans-serif;
+  // font-size: 2px;
+}
+// svg {
+//   margin-top: 5px;
+// }
+
+svg text {
+  font-family: "Black Ops One";
+  margin-top: 10px;
+  font-size: 80px;
+  stroke-width: 2px;
+  stroke: lightseagreen;
+  color: black;
+  animation: textAnimate 5s infinite alternate;
 }
 
-h1 {
-  font-family: "Black Ops One";
-  margin: 10px 0px;
-  font-size: 70px;
+@keyframes textAnimate {
+  0% {
+    stroke-dasharray: 0 50%;
+    stroke-dashoffset: 20%;
+    fill: lightseagreen;
+  }
+
+  100% {
+    stroke-dasharray: 50% 0;
+    stroke-dashoffstet: -20%;
+    fill: hsla(189, 68%, 75%, 0%);
+  }
+}
+
+.details-header {
+  font-size: 24px;
+}
+
+.details {
+  color: teal;
+  font-size: 20px;
+}
+
+.details-highlight {
+  color: darkslategrey;
 }
 
 #login-container,
@@ -21,6 +53,8 @@ h1 {
   margin: 5% auto;
 }
 
+#filter select,
+#filter input,
 #form-container input,
 #form-container select {
   margin: 10px;
@@ -51,38 +85,32 @@ h1 {
 
 #details-container,
 #graph {
-  width: 50%;
+  width: 40%;
   margin: auto;
 }
-#create-buttons input,
-#login-buttons input,
+
 #button,
 button {
   font-family: "Black Ops One";
   display: inline-block;
   padding: 0.35em 1.2em;
-  border: 0.1em solid black;
-  // margin: 0 0.3em 0.3em 0;
+  border: 0.1em solid lightseagreen;
   border-radius: 0.12em;
   box-sizing: border-box;
-  // text-decoration: none;
-  // font-family: "Roboto", sans-serif;
-  // font-weight: 300;
-  color: #000000;
+
+  color: lightseagreen;
   text-align: center;
   transition: all 0.2s;
 }
 
-#create-buttons input:hover,
-#login-buttons input:hover,
 #button:hover,
 button:hover {
   color: white;
-  background-color: #000000;
+  background-color: teal;
 }
 @media all and (max-width: 30em) {
-  #create-buttons input,
-  #login-buttons input,
+  // #create-buttons input,
+  // #login-buttons input,
   #button,
   button {
     display: block;

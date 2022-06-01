@@ -79,6 +79,7 @@ export function Login({ setToken, setUsername }) {
                 type="button"
                 name="create"
                 value="Create account"
+                id="button"
                 onClick={() => {
                   setCreate(true);
                   setLogin(false);
@@ -93,6 +94,7 @@ export function Login({ setToken, setUsername }) {
                 type="button"
                 name="create"
                 value="I have an account"
+                id="button"
                 onClick={() => {
                   setCreate(false);
                   setLogin(true);
@@ -102,6 +104,7 @@ export function Login({ setToken, setUsername }) {
                 type="button"
                 name="create"
                 value="Create account"
+                id="button"
                 onClick={() => {
                   createAccount();
                   setCreate(false);
