@@ -32,7 +32,7 @@ export default function ShowOne({
     {isLoading ? <LoadingSpinner/> :(  
       <><div id="details" >
         <h6 className="details-header">Transaction Details
-          <button class="btn shadow-none"
+          <button className="btn shadow-none"
           onClick={() =>
             deleteTransaction(transactionDetails.transactions[0].id)
           }><i class="fa fa-trash"></i></button>
@@ -45,7 +45,7 @@ export default function ShowOne({
            {moment(transactionDetails.transactions[0].txValue.date).format('MMMM Do YYYY, h:mm a')} |
            {" "}{transactionDetails.transactions[0].transactionType}
            {" "}{transactionDetails.transactions[0].qty}
-           {" "}{transactionDetails.transactions[0].network}</h6>
+           {" "}{transactionDetails.transactions[0].token}</h6>
 
            {/* if buy transaction */}
            {transactionDetails.transactions[0].transactionType === "BUY" &&

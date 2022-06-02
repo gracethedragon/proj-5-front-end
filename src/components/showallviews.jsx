@@ -7,14 +7,14 @@ import { instance } from "../connection/my-axios.mjs";
 
 export default function ShowAllViews({
   token,
-  transactionDetails,
-  setTransactionDetails,
+  setAllTransactionDetails,
   setDisplay,
   setViewId,
   display,
+  setIsLoading,
+  isLoading
 }) {
   console.log("token", token);
-  const [allTransactionDetails, setAllTransactionDetails] = useState([]);
   const [statDetails, setStatDetails] = useState([]);
   const [allViewDetails, setAllViewDetails] = useState([]);
 
@@ -26,33 +26,32 @@ export default function ShowAllViews({
       })
       .then((response) => {
         console.log(response.data, "ran");
-        setAllViewDetails(response.data.views);
-        // setDisplay('showallviews')
+        setAllViewDetails(response.data.views)
+        setIsLoading(false);
       });
   }, []);
 
   function showOne(viewId) {
+    setIsLoading(true)
     console.log(viewId, " id");
     instance
       .get("/get-view", { params: { token, viewId } })
       .then((response) => {
         console.log(response.data, "response");
-
         const { view, viewId: viewIdReceived } = response.data;
         const { transactions, stats } = view;
-        const transactionData = { transactions, stats };
-        console.log(transactionData, "txn deets");
-
         setViewId(viewIdReceived);
-        setTransactionDetails({ transactions, stats });
+        setAllTransactionDetails({ transactions, stats });
         setDisplay("showoneview");
+        setIsLoading(false)
       });
   }
 
   return (
     <div id="content-container">
-      {allViewDetails !== null && display === "showallviews" && (
-        <>
+      {isLoading ? <LoadingSpinner/> :
+       (
+      <>{allViewDetails !== null && display === "showallviews" && (
           <div id="details-container">
             <div id="views-container">
               <h6>Saved views</h6>
@@ -67,7 +66,7 @@ export default function ShowAllViews({
               })}
             </div>
           </div>
-        </>
+        )}</>
       )}
     </div>
   );

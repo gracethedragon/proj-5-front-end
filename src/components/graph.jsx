@@ -53,7 +53,6 @@ export function IndivGraph(graphData) {
       },
     ],
   };
-
   return <Line options={options} data={data} />;
 }
 
@@ -68,11 +67,13 @@ export function OverallGraph(graphData) {
         // data: txnData,
         data: [null, graphData.outlayTD, null],
         backgroundColor: "rgba(255, 99, 132, 0.5)",
+        pointRadius: 10,
       },
       {
         label: "Unrealised Rev",
         data: [null, graphData.unrealisedRev, null],
         backgroundColor: "rgba(53, 162, 235, 0.5)",
+        pointRadius: 10,
       },
     ],
   };

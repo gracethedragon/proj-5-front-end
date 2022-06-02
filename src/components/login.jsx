@@ -4,6 +4,8 @@ import { instance } from "../connection/my-axios.mjs";
 export function Login({ setToken, setUsername }) {
   const [login, setLogin] = useState(true);
   const [create, setCreate] = useState(false);
+  const [failedLogin, setFailedLogin] = useState(false)
+  const [failedCreate, setFailedCreate] = useState(false)
 
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -36,19 +38,33 @@ export function Login({ setToken, setUsername }) {
       setToken(token);
       setUsername(username);
     } catch (err) {
+      setFailedLogin(true)
       console.log("something wrong login request to server");
     }
   }
 
-  function createAccount() {
+  async function createAccount() {
+    setFailedLogin(false)
     console.log("create account");
     const password2 = password;
 
     const data = { email, password, password2 };
     console.log(data);
-    instance
-      .post("/register", data)
-      .then((response) => console.log(response, "posted"));
+
+    try {
+      const response = await instance.post("/register", data)
+      console.log(response,'user created')
+      setCreate(false);
+      setLogin(true);
+      setFailedCreate(false)
+    }catch (err) {
+      setFailedCreate(true)
+      console.log("something wrong login request to server");
+    }
+
+    // instance
+    //   .post("/register", data)
+    //   .then((response) => console.log(response, "posted"));
   }
   return (
     <div id="login-container">
@@ -56,6 +72,12 @@ export function Login({ setToken, setUsername }) {
         
           {login && <h2>Login to your account</h2>}
           {create && <h2>Create your account</h2>}
+          {failedCreate && 
+          <p>Error creating account, please try again</p>
+          }
+          {failedLogin && 
+          <p>Error logging in, please try again</p>
+          }
           <label>Username</label>
           <br />
           <input
@@ -67,7 +89,7 @@ export function Login({ setToken, setUsername }) {
           <label>Password</label>
           <br />
           <input
-            type="text"
+            type="password"
             name="password"
             onChange={(event) => handleInputChange(event)}
           ></input>
@@ -83,6 +105,7 @@ export function Login({ setToken, setUsername }) {
                 onClick={() => {
                   setCreate(true);
                   setLogin(false);
+                  setFailedLogin(false)
                 }}
               ></input>
               <input type="submit" id="button" name="login" value="Login"></input>
@@ -107,8 +130,8 @@ export function Login({ setToken, setUsername }) {
                 id="button"
                 onClick={() => {
                   createAccount();
-                  setCreate(false);
-                  setLogin(true);
+                  // setCreate(false);
+                  // setLogin(true);
                 }}
               ></input>
             </div>

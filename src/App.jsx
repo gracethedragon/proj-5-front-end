@@ -19,22 +19,18 @@ export default function App() {
   const [username, setUsername] = useState(null);
   const [token, setToken] = useState(null);
 
-  // submit a transaction
-  const [submit, setSubmit] = useState(false);
-
   // show one transaction
   const [transactionDetails, setTransactionDetails] = useState({
     transactions: [],
     stats: {},
   });
 
-  // show all transactions
-  const [showAll, setShowAll] = useState(false);
+  // set all transactions
+  const [allTransactionDetails, setAllTransactionDetails] = useState([]);
   
   // set parameters
   const [parameters ,setParameters] = useState(null)
-  // show all views
-  const [showAllViews, setShowAllViews] = useState(false);
+
 
   // set what component to render
   const [display, setDisplay] = useState(null);
@@ -42,27 +38,21 @@ export default function App() {
   const [viewId, setViewId] = useState(null);
 
   const submitRecord = () => {
+    setIsLoading(false)
     setDisplay("form");
-    setSubmit(true);
-    setShowAll(false);
   };
   const showRecords = () => {    
     setIsLoading(true)
-    // setParameters(null)
+    setParameters(null)
     console.log(isLoading, display, parameters)
     setDisplay("showall");
-    setShowAll(true);
-    setShowAllViews(false);
-    setSubmit(false);
+    // setShowAllViews(false);
     
   };
 
   const showViews = () => {
     setDisplay("showallviews");
-    console.log(display, showAllViews, showAll);
-    setShowAllViews(true);
-    setShowAll(false);
-    setSubmit(false);
+    console.log(display);
   };
   const logout = () => {
     setToken(null);
@@ -91,7 +81,6 @@ export default function App() {
           {display === "form" && 
             <Submit
               token={token}
-              setSubmit={setSubmit}
               setDisplay={setDisplay}
               display={display}
               setTransactionDetails={setTransactionDetails}
@@ -111,7 +100,8 @@ export default function App() {
               isLoading={isLoading}
               parameters={parameters}
               setParameters={setParameters}
-              showAll={showAll}
+              setAllTransactionDetails={setAllTransactionDetails}
+              allTransactionDetails={allTransactionDetails}
             /> 
           }
 
@@ -132,21 +122,25 @@ export default function App() {
               token={token}
               setDisplay={setDisplay}
               display={display}
-              setTransactionDetails={setTransactionDetails}
+              setAllTransactionDetails={setAllTransactionDetails}
               setViewId={setViewId}
+              setIsLoading={setIsLoading}
+              isLoading={isLoading}
               
             />
           )}
 
           {display === "showoneview" && (
             <ShowOneView
-              viewId={viewId}
-              transactionDetails={transactionDetails}
-              setTransactionDetails={setTransactionDetails}
+              viewId={viewId}  
               token={token}
+              allTransactionDetails={allTransactionDetails}
+              // transactionDetails={transactionDetails}
+              setTransactionDetails={setTransactionDetails}
               setDisplay={setDisplay}
               display={display}
-              setShowAllViews={setShowAllViews}
+              setIsLoading={setIsLoading}
+              isLoading={isLoading}
             />
           )}
         </>

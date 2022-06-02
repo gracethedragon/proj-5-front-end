@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { OverallGraph } from "./graph.jsx";
+import LoadingSpinner from "./spinner.jsx";
 import FilterView from "./filter.jsx";
 import ShowOne from "./showone.jsx";
 import axios from "axios";
@@ -9,29 +10,24 @@ import { instance } from "../connection/my-axios.mjs";
 export default function ShowOneView({
   viewId,
   token,
-  transactionDetails,
   setTransactionDetails,
   setDisplay,
   display,
-  setShowAllViews,
+  allTransactionDetails,
+  isLoading,
+  setIsLoading
 }) {
 
   const [editViewname, setEditViewname] = useState(false)
   const [editedViewname, setEditedViewname] = useState(null)
+  const [submittedEdit, setSubmittedEdit] = useState(false)
+  
   useEffect(() => {
-    console.log("ran use effect", transactionDetails, display);
-    // instance
-    // .get("/get-view", {params:{token, viewId}})
-    // .then((response) =>{
-    //   console.log(response.data,'response')
-    //   const { transactions, stats } = response.data;
-    //     const transactionData = { transactions, stats };
-    //     console.log(transactionData, "txn deets");
-    //     setTransactionDetails({ transactions, stats });
-    // })
-  }, []);
+    console.log("ran use effect", allTransactionDetails, display)
+  }, [submittedEdit]);
 
   function showOne(dbtransactionId) {
+    setIsLoading(true)
     console.log(dbtransactionId, " id");
     instance
       .get("/get-transaction", { params: { token, dbtransactionId } })
@@ -42,7 +38,7 @@ export default function ShowOneView({
         console.log(transactionData, "txn deets");
         setTransactionDetails({ transactions, stats });
         setDisplay("showone");
-        console.log(transactionDetails);
+        setIsLoading(false)
       });
   }
 
@@ -56,23 +52,29 @@ export default function ShowOneView({
     if(e.target.name === "viewname") {
       setEditedViewname(e.target.value)
       console.log(editedViewname)
-    }
-    
+    }   
   }
+
   function edit(e){
     e.preventDefault()
-    // instance.put("/")
+    instance
+    .post("/edit-viewname", {token, viewId, viewname: editedViewname})
+    .then((response)=>{
+      console.log(response)
+      submittedEdit(true)
+    })
     
   }
 
   return (
     <div id="content-container">
-      {display === "showoneview" && (
+      {isLoading ? <LoadingSpinner/> :
+       (
         <>
           <div id="details-container">
             <div id="summary-container">
-              <h6> View portfolio to date</h6>
-              <div>
+              <h6 className="details-header">View to date</h6>
+              
                 <button onClick={()=> setEditViewname(true)}>Edit Viewname</button>
                 {editViewname &&
                 <form onSubmit={(e)=>edit(e)}>
@@ -86,22 +88,21 @@ export default function ShowOneView({
                 </form>
                 }
                 <button onClick={() => deleteView(viewId)}>Delete View</button>
+              
+              <div>
+                Outlay TD: {allTransactionDetails.stats.outlay} | Unrealised Rev:{" "}
+                {allTransactionDetails.stats.unrealrev} | Unrealised G/L:{" "}
+                {(allTransactionDetails.stats.unrealgl*100).toFixed(2)}%
               </div>
               <div>
-                Outlay TD: {transactionDetails.stats.outlay} | Unrealised Rev:{" "}
-                {transactionDetails.stats.unrealrev} | Unrealised G/L:{" "}
-                {/* {statDetails.unrealgl.toFixed(2)}% */}
-                {transactionDetails.stats.unrealgl}%
-              </div>
-              <div>
-                Sale Oulay: {transactionDetails.stats.saleoutlay} | Actual Rev:{" "}
-                {transactionDetails.stats.actualrev} | Actual G/L:{" "}
-                {transactionDetails.stats.actualgl}
+                Sale Oulay: {allTransactionDetails.stats.saleoutlay} | Actual Rev:{" "}
+                {allTransactionDetails.stats.actualrev} | Actual G/L:{" "}
+                {(allTransactionDetails.stats.actualgl*100).toFixed(2)}%
               </div>
             </div>
 
             <div id="transaction-container">
-              {transactionDetails.transactions.map((transaction) => {
+              {allTransactionDetails.transactions.map((transaction) => {
                 return (
                   <div key={transaction.id} className="transaction">
                     <span onClick={() => showOne(transaction.id)}>
@@ -117,12 +118,12 @@ export default function ShowOneView({
           </div>
           <div id="graph">
             <OverallGraph
-              outlayTD={transactionDetails.stats.outlay}
-              unrealisedRev={transactionDetails.stats.unrealrev}
+              outlayTD={allTransactionDetails.stats.outlay}
+              unrealisedRev={allTransactionDetails.stats.unrealrev}
             />
           </div>
         </>
-      )}
+       )}
     </div>
   );
 }

@@ -10,35 +10,38 @@ import { instance } from "../connection/my-axios.mjs";
 
 export default function ShowAll({
   token,
-  transactionDetails,
   setTransactionDetails,
   setDisplay,
   setIsLoading,
   isLoading,
   parameters,
   setParameters,
-  showAll
+  allTransactionDetails,
+  setAllTransactionDetails
 }) {
   console.log("token", token);
   console.log("loading", isLoading);
 
-  // !isLoading ? setIsLoading(true) : null
-  const [allTransactionDetails, setAllTransactionDetails] = useState([]);
+  
   const [statDetails, setStatDetails] = useState([]);
-  const [isFiltered, setIsFiltered] = useState(false);
   const [noResults, setNoResults] = useState(false)
+
+  //view params
   const [checkedTxn, setCheckedTxn] = useState([])
 
   // filter params
   const [filter, setFilter] = useState(null);
   const [resetFilter, setResetFilter] = useState(false)
   const [viewname, setViewname] = useState("default viewname")
+  const [isFiltered, setIsFiltered] = useState(false);
   
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [network, setNetwork] = useState([]);
+  
   // to load page
   useEffect(() => {
+    setIsLoading(true)  
     console.log("ran use effect");
     console.log(parameters)
     instance
@@ -48,13 +51,17 @@ export default function ShowAll({
       .then((response) => {
         console.log(response.data, "ran");
         response.data.transactions.length >0 ? setNoResults(false) : setNoResults(true)
-        setAllTransactionDetails(response.data.transactions);
+
+        const {stats, transactions} = response.data
+        setAllTransactionDetails({stats, transactions});
         setStatDetails(response.data.stats);
         console.log(allTransactionDetails);
         setIsLoading(false)
         
       });
-  }, [parameters, setResetFilter]);
+  }, [parameters, isFiltered]);
+
+  
 
   function showOne(dbtransactionId) {
     setIsLoading(true)
@@ -66,7 +73,6 @@ export default function ShowAll({
         const { transactions, stats } = response.data;
         setTransactionDetails({ transactions, stats });
         setDisplay("showone");
-        console.log(transactionDetails);
         setIsLoading(false)
       });
   }
@@ -76,8 +82,9 @@ export default function ShowAll({
   const handleChange = (event) => {
     if (event.target.value === "all") {
       setFilter(null)
-      setParameters(null)
-      setIsLoading(true)    
+      // setParameters(null)
+      setIsFiltered(true)
+      // setIsLoading(true)    
     } else if (event.target.name === "viewname") {
       setViewname(event.target.value)
     } else {
@@ -97,15 +104,15 @@ export default function ShowAll({
   }
 
   function checkAll(){
-    console.log(allTransactionDetails)
-    setCheckedTxn(allTransactionDetails.map(transaction=> transaction.id))
+    console.log(allTransactionDetails.transactions)
+    setCheckedTxn(allTransactionDetails.transactions.map(transaction=> transaction.id))
     console.log(checkedTxn)
   }
   
   function createView(){
     console.log("view saved");
     console.log(checkedTxn, "checked txn details");
-    instance.post("/new-view", { token, checkedTxn, viewname}).then((response) => {
+    instance.post("/new-view", { token, transactionIds:checkedTxn, viewname}).then((response) => {
       setDisplay("showallviews")
       setIsLoading(true)
       console.log(response);
@@ -132,7 +139,7 @@ export default function ShowAll({
               </div>
             </div>
             <div id="filter">
-              <select name="filter" onChange={handleChange} defaultValue={filter}>
+              <select name="filter" onChange={handleChange} defaultValue={filter} multiple={false}>
                 <option name="filterby" value="">
                   ---FilterBy---
                 </option>
@@ -169,16 +176,17 @@ export default function ShowAll({
               {noResults && 
               <h6>no results</h6>  
               }
-              {!noResults && allTransactionDetails.map((detail) => {
+              {!noResults && allTransactionDetails.transactions.map((detail) => {
                 return (
                   <form>
                   <div key={detail.id} className="transaction">
                     {isFiltered &&
-                    <input type="checkbox" value={detail.id} onClick={()=>addChecked(detail.id)}/>}
+                    <input type="checkbox" value={detail.id} 
+                    // checked={checkedTxn.includes(detail.id)} 
+                    onClick={()=>addChecked(detail.id)}/>}
                     <span className="details" onClick={() => showOne(detail.id)}>
                       {moment(detail.txValue.date).format("DD/MM/YY")} | {detail.transactionType} |{" "}
                       {detail.qty} {detail.network} | {((detail.currentValue.value- detail.txValue.value)/detail.currentValue.value*100).toFixed(2)}% 
-                      
                     </span>
                   </div>
                   </form>
