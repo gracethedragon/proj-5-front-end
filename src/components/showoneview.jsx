@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { OverallGraph } from "./graph.jsx";
 import LoadingSpinner from "./spinner.jsx";
+import moment from 'moment'
 import FilterView from "./filter.jsx";
 import ShowOne from "./showone.jsx";
 import axios from "axios";
@@ -15,15 +16,20 @@ export default function ShowOneView({
   display,
   allTransactionDetails,
   isLoading,
-  setIsLoading
+  setIsLoading, 
+  viewname,
+  setViewname
 }) {
-
+  console.log(viewname)
   const [editViewname, setEditViewname] = useState(false)
   const [editedViewname, setEditedViewname] = useState(null)
   const [submittedEdit, setSubmittedEdit] = useState(false)
+  const [portfolioChange, setPortfolioChange] = useState(null)
   
   useEffect(() => {
     console.log("ran use effect", allTransactionDetails, display)
+    allTransactionDetails.transactions.sort((a,b)=> a.txValue.date - b.txValue.date)
+    setPortfolioChange((((allTransactionDetails.stats.totalSoldValue - allTransactionDetails.stats.totalBoughtValue)/allTransactionDetails.stats.totalSoldValue)*100));
   }, [submittedEdit]);
 
   function showOne(dbtransactionId) {
@@ -58,10 +64,12 @@ export default function ShowOneView({
   function edit(e){
     e.preventDefault()
     instance
-    .post("/edit-viewname", {token, viewId, viewname: editedViewname})
+    .post("/rename-view", {token, viewId, viewname: editedViewname})
     .then((response)=>{
       console.log(response)
-      submittedEdit(true)
+      setSubmittedEdit(true)
+      setViewname(editedViewname)
+      setEditViewname(false)
     })
     
   }
@@ -73,43 +81,34 @@ export default function ShowOneView({
         <>
           <div id="details-container">
             <div id="summary-container">
-              <h6 className="details-header">View to date</h6>
-              
+              <h6 className="details-header">{viewname}</h6>
+                <div id="button-container">
                 <button onClick={()=> setEditViewname(true)}>Edit Viewname</button>
-                {editViewname &&
+               
+                <button onClick={() => deleteView(viewId)}>Delete View</button>
+                </div>
+                <div id="edit-container">
+                 {editViewname &&
                 <form onSubmit={(e)=>edit(e)}>
                 <input
                   type="text"
                   name="viewname"
-                  defaultValue = {viewId.viewname}
+                  defaultValue = {viewname}
                   onChange={(e)=>handleChange(e)}
-                />
+                /> 
+                
                 <button type="submit">Edit</button>
                 </form>
                 }
-                <button onClick={() => deleteView(viewId)}>Delete View</button>
-              
-              <div>
-                Outlay TD: {allTransactionDetails.stats.outlay} | Unrealised Rev:{" "}
-                {allTransactionDetails.stats.unrealrev} | Unrealised G/L:{" "}
-                {(allTransactionDetails.stats.unrealgl*100).toFixed(2)}%
-              </div>
-              <div>
-                Sale Oulay: {allTransactionDetails.stats.saleoutlay} | Actual Rev:{" "}
-                {allTransactionDetails.stats.actualrev} | Actual G/L:{" "}
-                {(allTransactionDetails.stats.actualgl*100).toFixed(2)}%
-              </div>
+                </div>
             </div>
-
             <div id="transaction-container">
               {allTransactionDetails.transactions.map((transaction) => {
                 return (
                   <div key={transaction.id} className="transaction">
-                    <span onClick={() => showOne(transaction.id)}>
-                      {transaction.txValue.date} | {transaction.transactionType}{" "}
-                      | {transaction.qty} | {transaction.network} |{" "}
-                      {transaction.txValue.value} |{" "}
-                      {transaction.currentValue.value} |
+                    <span className={transaction.transactionType} onClick={() => showOne(transaction.id)}>
+                      {transaction.transactionType === "BUY"? `Bought`: `Sold`} {" "}
+                      {transaction.qty.toFixed(8)} {transaction.token} on {moment(transaction.txValue.date).format("DD-MM-YY")} | {(((transaction.soldValue-transaction.boughtValue)/transaction.soldValue)*100).toFixed(2)}%
                     </span>
                   </div>
                 );
@@ -117,6 +116,22 @@ export default function ShowOneView({
             </div>
           </div>
           <div id="graph">
+            <div id="summary-container">
+              
+               {portfolioChange < 0 ? <span className="text-warning portfolio-details">{portfolioChange.toFixed(2)}%</span> : <span className="text-primary portfolio-details">{portfolioChange.toFixed(2)}%</span>}
+
+              <div className ="portfolio-container">
+                
+                <div>
+                <span >Cost to date:</span> <br/><span className="text-secondary portfolio-details">USD {allTransactionDetails.stats.totalBoughtValue.toFixed(2)}</span><br/>
+                </div>
+                <div>
+                <span >Current value:</span><br/>
+                <span className=" portfolio-details">USD {allTransactionDetails.stats.totalSoldValue.toFixed(2)} </span>
+                </div>
+               
+              </div>
+            </div>
             <OverallGraph
               outlayTD={allTransactionDetails.stats.outlay}
               unrealisedRev={allTransactionDetails.stats.unrealrev}

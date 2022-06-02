@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import LoadingSpinner from "./spinner.jsx";
 import ShowOne from "./showone.jsx";
 import ShowOneView from "./showoneview.jsx";
+import moment from "moment";
 
 import { instance } from "../connection/my-axios.mjs";
 
@@ -12,7 +13,8 @@ export default function ShowAllViews({
   setViewId,
   display,
   setIsLoading,
-  isLoading
+  isLoading,
+  setViewname
 }) {
   console.log("token", token);
   const [statDetails, setStatDetails] = useState([]);
@@ -41,6 +43,7 @@ export default function ShowAllViews({
         const { view, viewId: viewIdReceived } = response.data;
         const { transactions, stats } = view;
         setViewId(viewIdReceived);
+        setViewname(response.data.viewName)
         setAllTransactionDetails({ transactions, stats });
         setDisplay("showoneview");
         setIsLoading(false)
@@ -54,12 +57,12 @@ export default function ShowAllViews({
       <>{allViewDetails !== null && display === "showallviews" && (
           <div id="details-container">
             <div id="views-container">
-              <h6>Saved views</h6>
+              <h6 className="details-header">Saved views</h6>
               {allViewDetails.map((view) => {
                 return (
                   <div key={view.id} className="view">
-                    <span onClick={() => showOne(view.id)}>
-                      {view.viewname} | {view.createdDate}
+                    <span className="view-transaction"onClick={() => showOne(view.id)}>
+                      {view.viewname} | {moment(view.createdDate).format('MMMM Do YYYY')}
                     </span>
                   </div>
                 );

@@ -35,7 +35,9 @@ export default function App() {
   // set what component to render
   const [display, setDisplay] = useState(null);
 
+  // set view
   const [viewId, setViewId] = useState(null);
+  const [viewname, setViewname] = useState(null)
 
   const submitRecord = () => {
     setIsLoading(false)
@@ -126,6 +128,7 @@ export default function App() {
               setViewId={setViewId}
               setIsLoading={setIsLoading}
               isLoading={isLoading}
+              setViewname={setViewname}
               
             />
           )}
@@ -141,6 +144,8 @@ export default function App() {
               display={display}
               setIsLoading={setIsLoading}
               isLoading={isLoading}
+              viewname={viewname}
+              setViewname={setViewname}
             />
           )}
         </>

@@ -101,14 +101,14 @@ export function Login({ setToken, setUsername }) {
                 type="button"
                 name="create"
                 value="Create account"
-                id="button"
+                className="button"
                 onClick={() => {
                   setCreate(true);
                   setLogin(false);
                   setFailedLogin(false)
                 }}
               ></input>
-              <input type="submit" id="button" name="login" value="Login"></input>
+              <input type="submit" className="button" name="login" value="Login"></input>
             </div>
           )}
           {create && (
@@ -117,7 +117,7 @@ export function Login({ setToken, setUsername }) {
                 type="button"
                 name="create"
                 value="I have an account"
-                id="button"
+                className="button"
                 onClick={() => {
                   setCreate(false);
                   setLogin(true);
@@ -127,7 +127,7 @@ export function Login({ setToken, setUsername }) {
                 type="button"
                 name="create"
                 value="Create account"
-                id="button"
+                className="button"
                 onClick={() => {
                   createAccount();
                   // setCreate(false);

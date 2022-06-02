@@ -35,47 +35,32 @@ export default function ShowOne({
           <button className="btn shadow-none"
           onClick={() =>
             deleteTransaction(transactionDetails.transactions[0].id)
-          }><i class="fa fa-trash"></i></button>
+          }><i className="fa fa-trash"></i></button>
         </h6>
         
-        <h6 className="details">{transactionDetails.transactions[0].hash}</h6>
-        
-        <br />
-         <h6 className="details">
-           {moment(transactionDetails.transactions[0].txValue.date).format('MMMM Do YYYY, h:mm a')} |
-           {" "}{transactionDetails.transactions[0].transactionType}
-           {" "}{transactionDetails.transactions[0].qty}
-           {" "}{transactionDetails.transactions[0].token}</h6>
+        <h6 className="details">
+          {transactionDetails.transactions[0].hash}</h6>
+        <h6 className="details-highlight">
+          {transactionDetails.transactions[0].qty} {transactionDetails.transactions[0].token}</h6>
+           <div>
+          <h6 className="details" >
+            Bought @ <span className="details-highlight">USD {transactionDetails.transactions[0].boughtValue.toFixed(2)}</span> on {moment(transactionDetails.transactions[0].boughtDate).format('MMMM Do YYYY')} </h6>
 
-           {/* if buy transaction */}
-           {transactionDetails.transactions[0].transactionType === "BUY" &&
-           <div>
-          <h6 className="details" >Transacted @ 
-          {" "}<span className="details-highlight">USD {transactionDetails.transactions[0].txValue.value.toFixed(2)}</span>| 
-          {" "}
-          Currently @ 
-          {" "}<span className="details-highlight">USD {transactionDetails.transactions[0].currentValue.value.toFixed(2)}</span></h6>
-          <h6 className="details">Change of <span className="details-highlight">{(transactionDetails.stats.unrealgl * 100).toFixed(2)}% </span></h6>
+          <h6 className="details" >
+          {transactionDetails.transactions[0].transactionType === "BUY" ?`Currently @`  : `Sold @`}
+          {" "}<span className="details-highlight">USD {transactionDetails.transactions[0].soldValue.toFixed(2)}</span> on {moment(transactionDetails.transactions[0].soldDate).format('MMMM Do YYYY')}</h6>
+
+          <h6 className="details">Change of <span className="details-highlight">{(((transactionDetails.stats.totalSoldValue - transactionDetails.stats.totalBoughtValue)/ transactionDetails.stats.totalSoldValue)* 100).toFixed(2)}% </span></h6>
           </div>
-        }
-          {/* if sell transaction */}
-          {transactionDetails.transactions[0].transactionType === "SELL" &&
-           <div>
-           <h6 className="details" >Bought @ 
-          {" "}<span className="details-highlight">{transactionDetails.transactions[0].currentValue.value.toFixed(2)}</span>| 
-          {" "}
-          Transacted @ 
-          {" "}<span className="details-highlight">USD {transactionDetails.transactions[0].txValue.value.toFixed(2)}</span></h6>
-          <h6 className="details">Change of <span className="details-highlight">{(transactionDetails.stats.realgl*100).toFixed(2)}% </span></h6>
-           </div>
-        }
+        
       </div>
       <div id="graph">
         <IndivGraph
-          txValue={transactionDetails.transactions[0].txValue.value}
-          curValue={transactionDetails.transactions[0].currentValue.value}
-          txDate={transactionDetails.transactions[0].txValue.date}
-          curDate={transactionDetails.transactions[0].currentValue.date}
+          boughtValue={transactionDetails.transactions[0].boughtValue}
+          soldValue={transactionDetails.transactions[0].soldValue}
+          boughtDate={transactionDetails.transactions[0].boughtDate}
+          soldDate={transactionDetails.transactions[0].soldDate}
+          transactionType={transactionDetails.transactions[0].transactionType}
         />
       </div>
        </> )} 

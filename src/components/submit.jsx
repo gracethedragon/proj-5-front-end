@@ -48,8 +48,7 @@ export default function Submit({
       token,
       transactionType: transactionType,
       transactionHash: transactionHash,
-      unitCostPrice: 0.20,
-      // unitCostDate: boughtDate
+      boughtDate
     };
     console.log(boughtDate)
 

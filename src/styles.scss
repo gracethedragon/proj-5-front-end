@@ -36,16 +36,25 @@ svg text {
 }
 
 .details-header {
-  font-size: 24px;
+  font-size: 20px;
 }
 
 .details {
   color: teal;
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .details-highlight {
   color: darkslategrey;
+  font-size: 18px;
+}
+.BUY, .view-transaction {
+  color: teal;
+  font-size: 16px;
+}
+.SELL {
+  color: darkslategrey;
+  font-size: 16px;
 }
 
 #login-container,
@@ -72,11 +81,24 @@ svg text {
   margin: 15px 0px;
 }
 
+
+
 #content-container,
 #button-container {
   display: flex;
   justify-content: space-between;
   padding: 10px;
+}
+
+#edit-container{
+  display:flex;
+  justify-content: space-around;
+}
+
+.transaction input,
+#filter button, 
+#edit-container input {
+  margin-right: 10px;
 }
 
 #button-container button {
@@ -89,7 +111,11 @@ svg text {
   margin: auto;
 }
 
-#button,
+#details-container {
+  margin-top: 15px;
+}
+
+.button,
 button {
   font-family: "Black Ops One";
   display: inline-block;
@@ -103,17 +129,25 @@ button {
   transition: all 0.2s;
 }
 
-#button:hover,
+.button:hover,
 button:hover {
   color: white;
   background-color: teal;
 }
 @media all and (max-width: 30em) {
-  // #create-buttons input,
-  // #login-buttons input,
-  #button,
+  
+  .button,
   button {
     display: block;
     margin: 0.4em auto;
   }
+}
+
+.portfolio-details{
+  font-size: 26px
+}
+
+.portfolio-container{
+  display: flex;
+  justify-content: space-evenly;
 }

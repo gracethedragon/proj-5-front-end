@@ -23,7 +23,7 @@ export default function ShowAll({
   console.log("loading", isLoading);
 
   
-  const [statDetails, setStatDetails] = useState([]);
+  const [portfolioChange, setPortfolioChange] = useState(null)
   const [noResults, setNoResults] = useState(false)
 
   //view params
@@ -31,8 +31,8 @@ export default function ShowAll({
 
   // filter params
   const [filter, setFilter] = useState(null);
-  const [resetFilter, setResetFilter] = useState(false)
-  const [viewname, setViewname] = useState("default viewname")
+  const [statDetails, setStatDetails] =useState([])
+  const [viewname, setViewname] = useState("Default Viewname")
   const [isFiltered, setIsFiltered] = useState(false);
   
   const [startDate, setStartDate] = useState(new Date());
@@ -54,7 +54,7 @@ export default function ShowAll({
 
         const {stats, transactions} = response.data
         setAllTransactionDetails({stats, transactions});
-        setStatDetails(response.data.stats);
+        setPortfolioChange((((response.data.stats.totalSoldValue - response.data.stats.totalBoughtValue)/response.data.stats.totalSoldValue)*100));
         console.log(allTransactionDetails);
         setIsLoading(false)
         
@@ -71,6 +71,7 @@ export default function ShowAll({
       .then((response) => {
         console.log(response.data, "response");
         const { transactions, stats } = response.data;
+        transactions.sort((a,b)=> a.txValue.date - b.txValue.date)
         setTransactionDetails({ transactions, stats });
         setDisplay("showone");
         setIsLoading(false)
@@ -93,10 +94,15 @@ export default function ShowAll({
     }
   };
 
-  function addChecked(id){
+  function toggleCheck(id){
+    console.log(checkedTxn)
     if(checkedTxn.includes(id)){
-      const position = checkedTxn.indexOf(id)
-      checkedTxn.splice(position, 1)
+      const nextCheckedTxn = [...checkedTxn];
+
+      const position = nextCheckedTxn.indexOf(id)
+      nextCheckedTxn.splice(position, 1)
+
+      setCheckedTxn(nextCheckedTxn);
     } else {
       setCheckedTxn([...checkedTxn, id])
     }
@@ -125,32 +131,20 @@ export default function ShowAll({
        (
         <>
           <div id="details-container">
-            <div id="summary-container">
-              <h6 className="details-header">Portfolio to date</h6>
-              <div>
-                Outlay TD: {statDetails.outlay} | Unrealised Rev:{" "}
-                {statDetails.unrealrev} | Unrealised G/L:{" "}
-                
-                {(statDetails.unrealgl*100).toFixed(2)}%
-              </div>
-              <div>
-                Sale Oulay: {statDetails.saleoutlay} | Actual Rev:{" "}
-                {statDetails.actualrev} | Actual G/L: {(statDetails.actualgl*100).toFixed(2)}%
-              </div>
-            </div>
+           
             <div id="filter">
               <select name="filter" onChange={handleChange} defaultValue={filter} multiple={false}>
                 <option name="filterby" value="">
                   ---FilterBy---
                 </option>
                 <option name="filterby" value="all">
-                  all
+                  All
                 </option>
                 <option name="network" value="Network">
-                  network
+                  Network
                 </option>
                 <option name="date" value="Date">
-                  date
+                  Transacted Date
                 </option>
               </select>
               <FilterView
@@ -182,11 +176,15 @@ export default function ShowAll({
                   <div key={detail.id} className="transaction">
                     {isFiltered &&
                     <input type="checkbox" value={detail.id} 
-                    // checked={checkedTxn.includes(detail.id)} 
-                    onClick={()=>addChecked(detail.id)}/>}
-                    <span className="details" onClick={() => showOne(detail.id)}>
-                      {moment(detail.txValue.date).format("DD/MM/YY")} | {detail.transactionType} |{" "}
-                      {detail.qty} {detail.network} | {((detail.currentValue.value- detail.txValue.value)/detail.currentValue.value*100).toFixed(2)}% 
+                    checked={checkedTxn.includes(detail.id)} 
+                    onClick={()=>toggleCheck(detail.id)}/>
+                    }
+                    <span className={detail.transactionType} onClick={() => showOne(detail.id)}>
+                      {detail.transactionType === "BUY"? `Bought`: `Sold`} {" "}
+                      {detail.qty.toFixed(8)} {detail.token}  on {moment(detail.txValue.date).format("DD-MM-YY")} | 
+                      
+
+                      {((detail.soldValue- detail.boughtValue)/detail.soldValue*100).toFixed(2)}% 
                     </span>
                   </div>
                   </form>
@@ -196,9 +194,27 @@ export default function ShowAll({
             </div>
           </div>
           <div id="graph">
+             
+            <div id="summary-container">
+              <h6 className="details-header">Portfolio</h6> 
+               {portfolioChange < 0 ? <span className="text-warning portfolio-details">{portfolioChange.toFixed(2)}%</span> : <span className="text-primary portfolio-details">{portfolioChange.toFixed(2)}%</span>}
+
+              <div className ="portfolio-container">
+                
+                <div>
+                <span >Cost to date:</span> <br/><span className="text-secondary portfolio-details">USD {allTransactionDetails.stats.totalBoughtValue.toFixed(2)}</span><br/>
+                </div>
+                <div>
+                <span >Current value:</span><br/>
+                <span className=" portfolio-details">USD {allTransactionDetails.stats.totalSoldValue.toFixed(2)} </span>
+                </div>
+               
+              </div>
+              
+            </div>
             <OverallGraph
-              outlayTD={statDetails.outlay}
-              unrealisedRev={statDetails.unrealrev}
+              totalBoughtValue = {allTransactionDetails.stats.totalBoughtValue}
+              totalSoldValue = {allTransactionDetails.stats.totalSoldValue}
             />
           </div>
         </>
