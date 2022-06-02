@@ -6,14 +6,17 @@ export default function FilterView({
   filter,
   setIsFiltered,
   token,
-  setAllTransactionDetails,
-  setNoResults,
-  
-  setParameters
+  setParameters,
+  setIsLoading,
+  setStartDate,
+  setEndDate,
+  startDate,
+  endDate,
+  setNetwork,
+  network
 }) {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [network, setNetwork] = useState("");
+  
+  
   const [showSaveView, setShowSaveView] = useState(false);
   const [viewSaved, setViewSaved] = useState(false);
   const [viewname, setViewname] = useState("default viewname")
@@ -35,7 +38,8 @@ export default function FilterView({
   };
 
   function submitFilter() {
-    
+    setIsLoading(true)
+    setIsFiltered(true)
     const parameters = [];
     if (filter === "Date") {
       console.log(startDate, endDate, "date filter");
@@ -46,29 +50,29 @@ export default function FilterView({
       console.log(network, "network filter");
       console.log(parameters)
     }
-    instance
-      .get("/all-transactions", {
-        params: { token, filterBy: { column: filter, parameters } },
-      })
-      .then((response) => {
+    // instance
+    //   .get("/all-transactions", {
+    //     params: { token, filterBy: { column: filter, parameters } },
+    //   })
+    //   .then((response) => {
         
-        console.log("response", response);
-        if(response.data.transactions.length === 0){
-          console.log('no results')
-          setNoResults(true)
-          setTransactionIds("")
+    //     console.log("response", response);
+    //     if(response.data.transactions.length === 0){
+    //       console.log('no results')
+    //       setNoResults(true)
+    //       setTransactionIds("")
           
-        } else {
-          setNoResults(false)
-          setIsFiltered(true);
-          setAllTransactionDetails(response.data.transactions);
-          setTransactionIds(
-            response.data.transactions.map((transaction) => transaction.id)
-          );
-          console.log(transactionIds, "saved txn details");
-          setShowSaveView(true);
-        }
-      });
+    //     } else {
+    //       setNoResults(false)
+    //       setIsFiltered(true);
+    //       setAllTransactionDetails(response.data.transactions);
+    //       setTransactionIds(
+    //         response.data.transactions.map((transaction) => transaction.id)
+    //       );
+    //       console.log(transactionIds, "saved txn details");
+    //       setShowSaveView(true);
+    //     }
+    //   });
     
   }
 
@@ -82,10 +86,6 @@ export default function FilterView({
       console.log(response);
     });
   }
-
-  useEffect(() => {
-    setViewSaved(false);
-  }, [filter, startDate, endDate, network]);
 
   return (
     <div id="filter2-container">
@@ -107,7 +107,7 @@ export default function FilterView({
           <select
             name="filter"
             onChange={(event)=>handleChange(event)}
-            defaultValue={""}
+            defaultValue={network}
             required
           >
             <option value="" disabled>

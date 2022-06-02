@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IndivGraph } from "./graph.jsx";
-import ShowOne from "./showone.jsx";
+import LoadingSpinner from "./spinner.jsx";
 import { instance } from "../connection/my-axios.mjs";
 
 export default function Submit({
@@ -10,11 +10,12 @@ export default function Submit({
   setDisplay,
   setTransactionDetails,
   transactionDetails,
+  isLoading,
+  setIsLoading
 }) {
   const [transactionHash, setTransactionHash] = useState();
   const [transactionType, setTransactionType] = useState();
   const [cost, setCost] = useState(null)
- 
 
   const handleInputChange = (event) => {
     if (event.target.name == "transactionHash") {
@@ -41,6 +42,7 @@ export default function Submit({
 
   function record(e) {
     e.preventDefault();
+    setIsLoading(true)
 
     const data = {
       token,
@@ -56,14 +58,16 @@ export default function Submit({
       const transactionData = { transactions, stats };
 
       setTransactionDetails(transactionData);
+      
       setDisplay("showone");
       console.log(transactionDetails);
+      setIsLoading(false)
     });
   }
 
   return (
     <div id="container">
-      {display === "form" && (
+      {isLoading? <LoadingSpinner/> :(
         <div id="form-container">
           <form onSubmit={(e) => record(e)}>
             <label>Transaction Hash</label><br/>
@@ -100,7 +104,6 @@ export default function Submit({
           </form>
         </div>
       )}
-     
     </div>
   );
 }

@@ -43,11 +43,13 @@ export function IndivGraph(graphData) {
         // data: txnData,
         data: [null, graphData.txValue, null],
         backgroundColor: "rgba(255, 99, 132, 0.5)",
+        pointRadius: 10,
       },
       {
         label: `CurDate: ${graphData.curDate}`,
         data: [null, graphData.curValue, null],
         backgroundColor: "rgba(53, 162, 235, 0.5)",
+        pointRadius: 10,
       },
     ],
   };

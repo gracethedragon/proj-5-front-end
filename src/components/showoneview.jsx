@@ -20,6 +20,15 @@ export default function ShowOneView({
   const [editedViewname, setEditedViewname] = useState(null)
   useEffect(() => {
     console.log("ran use effect", transactionDetails, display);
+    // instance
+    // .get("/get-view", {params:{token, viewId}})
+    // .then((response) =>{
+    //   console.log(response.data,'response')
+    //   const { transactions, stats } = response.data;
+    //     const transactionData = { transactions, stats };
+    //     console.log(transactionData, "txn deets");
+    //     setTransactionDetails({ transactions, stats });
+    // })
   }, []);
 
   function showOne(dbtransactionId) {

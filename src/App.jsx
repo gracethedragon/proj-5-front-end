@@ -4,12 +4,17 @@ import ShowAll from "./components/showall.jsx";
 import ShowOne from "./components/showone.jsx";
 import ShowAllViews from "./components/showallviews.jsx";
 import { Login } from "./components/login.jsx";
+import LoadingSpinner from "./components/spinner.jsx";
+
 import axios from "axios";
 import ShowOneView from "./components/showoneview.jsx";
 
 //One ether = 1,000,000,000,000,000,000 wei
 
 export default function App() {
+  // loader
+  const [isLoading, setIsLoading] = useState(false);
+
   // user authentication purposes
   const [username, setUsername] = useState(null);
   const [token, setToken] = useState(null);
@@ -25,7 +30,9 @@ export default function App() {
 
   // show all transactions
   const [showAll, setShowAll] = useState(false);
-
+  
+  // set parameters
+  const [parameters ,setParameters] = useState(null)
   // show all views
   const [showAllViews, setShowAllViews] = useState(false);
 
@@ -39,11 +46,15 @@ export default function App() {
     setSubmit(true);
     setShowAll(false);
   };
-  const showRecords = () => {
+  const showRecords = () => {    
+    setIsLoading(true)
+    // setParameters(null)
+    console.log(isLoading, display, parameters)
     setDisplay("showall");
     setShowAll(true);
     setShowAllViews(false);
     setSubmit(false);
+    
   };
 
   const showViews = () => {
@@ -59,8 +70,11 @@ export default function App() {
   };
   return (
     <div id="body">
+      
       {!token && <Login setToken={setToken} setUsername={setUsername} />}
+      
       {token && (
+        
         <>
           <div id="button-container">
             <div id="buttonleft">
@@ -74,7 +88,7 @@ export default function App() {
             </div>
           </div>
 
-          {display === "form" && (
+          {display === "form" && 
             <Submit
               token={token}
               setSubmit={setSubmit}
@@ -82,36 +96,48 @@ export default function App() {
               display={display}
               setTransactionDetails={setTransactionDetails}
               transactionDetails={transactionDetails}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
             />
-          )}
+          }
 
-          {showAll && (
+          {display==="showall" &&
             <ShowAll
               token={token}
               setDisplay={setDisplay}
               display={display}
               setTransactionDetails={setTransactionDetails}
-            />
-          )}
+              setIsLoading={setIsLoading}
+              isLoading={isLoading}
+              parameters={parameters}
+              setParameters={setParameters}
+              showAll={showAll}
+            /> 
+          }
 
-          {display === "showone" && (
+          {display === "showone" &&
             <ShowOne
               transactionDetails={transactionDetails}
               token={token}
               setDisplay={setDisplay}
-              displa={display}
+              display={display}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+              
             />
-          )}
+          }
 
-          {showAllViews && (
+          {display === "showallviews" && (
             <ShowAllViews
               token={token}
               setDisplay={setDisplay}
               display={display}
               setTransactionDetails={setTransactionDetails}
               setViewId={setViewId}
+              
             />
           )}
+
           {display === "showoneview" && (
             <ShowOneView
               viewId={viewId}
@@ -125,6 +151,8 @@ export default function App() {
           )}
         </>
       )}
+    
     </div>
-  );
+          
+  )
 }

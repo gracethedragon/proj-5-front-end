@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { OverallGraph } from "./graph.jsx";
 import FilterView from "./filter.jsx";
 import moment from "moment";
+import LoadingSpinner from "./spinner.jsx";
 import ShowOne from "./showone.jsx";
 import axios from "axios";
 
@@ -12,53 +13,77 @@ export default function ShowAll({
   transactionDetails,
   setTransactionDetails,
   setDisplay,
-  display,
+  setIsLoading,
+  isLoading,
+  parameters,
+  setParameters,
+  showAll
 }) {
   console.log("token", token);
+  console.log("loading", isLoading);
+
+  // !isLoading ? setIsLoading(true) : null
   const [allTransactionDetails, setAllTransactionDetails] = useState([]);
   const [statDetails, setStatDetails] = useState([]);
   const [isFiltered, setIsFiltered] = useState(false);
   const [noResults, setNoResults] = useState(false)
   const [checkedTxn, setCheckedTxn] = useState([])
-  const [filter, setFilter] = useState(null);
-  const [parameters ,setParameters] = useState(null)
 
+  // filter params
+  const [filter, setFilter] = useState(null);
+  const [resetFilter, setResetFilter] = useState(false)
+  const [viewname, setViewname] = useState("default viewname")
+  
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [network, setNetwork] = useState([]);
+  // to load page
   useEffect(() => {
     console.log("ran use effect");
+    console.log(parameters)
     instance
       .get("/all-transactions", {
         params: { token, filterBy: { column: filter, parameters }},
       })
       .then((response) => {
         console.log(response.data, "ran");
-        response.data.transactions.length >0 ? setNoResults(false) : null
+        response.data.transactions.length >0 ? setNoResults(false) : setNoResults(true)
         setAllTransactionDetails(response.data.transactions);
         setStatDetails(response.data.stats);
         console.log(allTransactionDetails);
-        setDisplay("showall");
+        setIsLoading(false)
+        
       });
-  }, [parameters]);
+  }, [parameters, setResetFilter]);
 
   function showOne(dbtransactionId) {
+    setIsLoading(true)
     console.log(dbtransactionId, " id");
     instance
       .get("/get-transaction", { params: { token, dbtransactionId } })
       .then((response) => {
         console.log(response.data, "response");
         const { transactions, stats } = response.data;
-        const transactionData = { transactions, stats };
-        console.log(transactionDetails, "txn deets");
         setTransactionDetails({ transactions, stats });
         setDisplay("showone");
         console.log(transactionDetails);
+        setIsLoading(false)
       });
   }
 
   
 
   const handleChange = (event) => {
+    if (event.target.value === "all") {
+      setFilter(null)
+      setParameters(null)
+      setIsLoading(true)    
+    } else if (event.target.name === "viewname") {
+      setViewname(event.target.value)
+    } else {
     setFilter(event.target.value);
     console.log(filter);
+    }
   };
 
   function addChecked(id){
@@ -73,13 +98,24 @@ export default function ShowAll({
 
   function checkAll(){
     console.log(allTransactionDetails)
-    // setCheckedTxn(transactionDetails.map(transaction=> transaction.id))
+    setCheckedTxn(allTransactionDetails.map(transaction=> transaction.id))
     console.log(checkedTxn)
+  }
+  
+  function createView(){
+    console.log("view saved");
+    console.log(checkedTxn, "checked txn details");
+    instance.post("/new-view", { token, checkedTxn, viewname}).then((response) => {
+      setDisplay("showallviews")
+      setIsLoading(true)
+      console.log(response);
+    });
   }
 
   return (
     <div id="content-container">
-      {display === "showall" && (
+      {isLoading ? <LoadingSpinner/> :
+       (
         <>
           <div id="details-container">
             <div id="summary-container">
@@ -96,9 +132,12 @@ export default function ShowAll({
               </div>
             </div>
             <div id="filter">
-              <select name="filter" onChange={handleChange}>
+              <select name="filter" onChange={handleChange} defaultValue={filter}>
                 <option name="filterby" value="">
                   ---FilterBy---
+                </option>
+                <option name="filterby" value="all">
+                  all
                 </option>
                 <option name="network" value="Network">
                   network
@@ -111,14 +150,18 @@ export default function ShowAll({
                 filter={filter}
                 setIsFiltered={setIsFiltered}
                 token={token}
-                setAllTransactionDetails={setAllTransactionDetails}
-                setNoResults={setNoResults}
-                
                 setParameters={setParameters}
+                setIsLoading={setIsLoading}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
+                startDate={startDate}
+                endDate={endDate}
+                setNetwork={setNetwork}
+                network={network}
               />
-              {isFiltered &&
-              <><input type="text" placeholder="viewname"></input>
-              <button>Create View</button>
+              {isFiltered &&!noResults &&
+              <><input type="text" name="viewname" onChange={handleChange} placeholder={viewname}></input>
+              <button onClick={createView}>Create View</button>
               <button onClick={()=>checkAll()}>Select All</button></>
               }
             </div>
@@ -151,7 +194,7 @@ export default function ShowAll({
             />
           </div>
         </>
-      )}
+      )} 
     </div>
   );
 }
