@@ -62,6 +62,7 @@
     "react-date-picker": "^8.4.0",
     "react-date-range": "^1.4.0",
     "sequelize": "^6.19.2",
-    "style-loader": "^3.3.1"
+    "style-loader": "^3.3.1",
+    "util": "^0.12.4"
   }
 }

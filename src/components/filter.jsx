@@ -84,6 +84,9 @@ export default function FilterView({
       setShowSaveView(false);
       setViewSaved("View Saved!");
       console.log(response);
+    }).catch((error)=>{
+      console.log(error)
+        setDisplay("errormsg")
     });
   }
 
@@ -91,15 +94,17 @@ export default function FilterView({
     <div id="filter2-container">
       {filter === "Date" && (
         <div id="datefilter">
-          from:
-          <DatePicker onChange={setStartDate} value={startDate} />
-          to:
+          
+          <DatePicker onChange={setStartDate} value={startDate} />{"  "}
+          to before{"  "}
           <DatePicker
             minDate={startDate}
             onChange={setEndDate}
             value={endDate}
           />
-          <span><button onClick={submitFilter}>Go</button></span>
+          
+          {"  "}
+          <button onClick={submitFilter}>Go</button>
         </div>
       )}
       {filter === "Network" && (
@@ -107,7 +112,7 @@ export default function FilterView({
           <select
             name="filter"
             onChange={(event)=>handleChange(event)}
-            defaultValue={network}
+            defaultValue={network.length !== 0 ? network:""}
             required
           >
             <option value="" disabled>

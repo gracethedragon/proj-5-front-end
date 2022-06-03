@@ -28,7 +28,9 @@ export default function ShowOneView({
   
   useEffect(() => {
     console.log("ran use effect", allTransactionDetails, display)
-    allTransactionDetails.transactions.sort((a,b)=> a.txValue.date - b.txValue.date)
+    
+
+    allTransactionDetails.transactions.sort((a,b)=> new Date(b.txValue.date) - new Date(a.txValue.date))
     setPortfolioChange((((allTransactionDetails.stats.totalSoldValue - allTransactionDetails.stats.totalBoughtValue)/allTransactionDetails.stats.totalSoldValue)*100));
   }, [submittedEdit]);
 
@@ -70,6 +72,9 @@ export default function ShowOneView({
       setSubmittedEdit(true)
       setViewname(editedViewname)
       setEditViewname(false)
+    }).catch((error)=>{
+      console.log(error)
+        setDisplay("errormsg")
     })
     
   }
@@ -123,18 +128,18 @@ export default function ShowOneView({
               <div className ="portfolio-container">
                 
                 <div>
-                <span >Cost to date:</span> <br/><span className="text-secondary portfolio-details">USD {allTransactionDetails.stats.totalBoughtValue.toFixed(2)}</span><br/>
+                <span >Cost to date:</span> <br/><span className="text-secondary portfolio-details">USD {allTransactionDetails.stats.totalBoughtValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span><br/>
                 </div>
                 <div>
                 <span >Current value:</span><br/>
-                <span className=" portfolio-details">USD {allTransactionDetails.stats.totalSoldValue.toFixed(2)} </span>
+                <span className=" portfolio-details">USD {allTransactionDetails.stats.totalSoldValue.toLocaleString(undefined, { maximumFractionDigits: 2 })} </span>
                 </div>
                
               </div>
             </div>
             <OverallGraph
-              outlayTD={allTransactionDetails.stats.outlay}
-              unrealisedRev={allTransactionDetails.stats.unrealrev}
+              totalBoughtValue = {allTransactionDetails.stats.totalBoughtValue}
+              totalSoldValue = {allTransactionDetails.stats.totalSoldValue}
             />
           </div>
         </>

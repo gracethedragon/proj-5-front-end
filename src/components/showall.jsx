@@ -17,11 +17,15 @@ export default function ShowAll({
   parameters,
   setParameters,
   allTransactionDetails,
-  setAllTransactionDetails
+  setAllTransactionDetails,
+  toggleShowAll,
+  filter, 
+  setFilter,
+  getall,
+  setGetall
 }) {
   console.log("token", token);
-  console.log("loading", isLoading);
-
+  console.log("loading", isLoading, toggleShowAll);
   
   const [portfolioChange, setPortfolioChange] = useState(null)
   const [noResults, setNoResults] = useState(false)
@@ -29,9 +33,10 @@ export default function ShowAll({
   //view params
   const [checkedTxn, setCheckedTxn] = useState([])
 
-  // filter params
-  const [filter, setFilter] = useState(null);
-  const [statDetails, setStatDetails] =useState([])
+  // // filter params
+  // const [filter, setFilter] = useState(null);
+
+  // const [statDetails, setStatDetails] =useState([])
   const [viewname, setViewname] = useState("Default Viewname")
   const [isFiltered, setIsFiltered] = useState(false);
   
@@ -39,11 +44,16 @@ export default function ShowAll({
   const [endDate, setEndDate] = useState(new Date());
   const [network, setNetwork] = useState([]);
   
+  
   // to load page
   useEffect(() => {
     setIsLoading(true)  
     console.log("ran use effect");
-    console.log(parameters)
+    console.log(token, parameters, filter)
+    if( parameters === null && getall === false) {
+      setIsFiltered(false)
+    } 
+    
     instance
       .get("/all-transactions", {
         params: { token, filterBy: { column: filter, parameters }},
@@ -53,13 +63,16 @@ export default function ShowAll({
         response.data.transactions.length >0 ? setNoResults(false) : setNoResults(true)
 
         const {stats, transactions} = response.data
+        transactions.sort((a,b)=> new Date(b.txValue.date) - new Date(a.txValue.date))
+        
         setAllTransactionDetails({stats, transactions});
         setPortfolioChange((((response.data.stats.totalSoldValue - response.data.stats.totalBoughtValue)/response.data.stats.totalSoldValue)*100));
         console.log(allTransactionDetails);
+        
         setIsLoading(false)
         
       });
-  }, [parameters, isFiltered]);
+  }, [parameters,isFiltered, toggleShowAll]); 
 
   
 
@@ -71,8 +84,9 @@ export default function ShowAll({
       .then((response) => {
         console.log(response.data, "response");
         const { transactions, stats } = response.data;
-        transactions.sort((a,b)=> a.txValue.date - b.txValue.date)
+        
         setTransactionDetails({ transactions, stats });
+        console.log(transactions[0].txValue.date)
         setDisplay("showone");
         setIsLoading(false)
       });
@@ -83,9 +97,10 @@ export default function ShowAll({
   const handleChange = (event) => {
     if (event.target.value === "all") {
       setFilter(null)
-      // setParameters(null)
+      setParameters(null)
       setIsFiltered(true)
-      // setIsLoading(true)    
+      setIsLoading(true)    
+      setGetall(true)
     } else if (event.target.name === "viewname") {
       setViewname(event.target.value)
     } else {
@@ -122,6 +137,9 @@ export default function ShowAll({
       setDisplay("showallviews")
       setIsLoading(true)
       console.log(response);
+    }).catch((error)=>{
+      console.log(error)
+        setDisplay("errormsg")
     });
   }
 
@@ -130,10 +148,9 @@ export default function ShowAll({
       {isLoading ? <LoadingSpinner/> :
        (
         <>
-          <div id="details-container">
-           
+          <div id="details-container">      
             <div id="filter">
-              <select name="filter" onChange={handleChange} defaultValue={filter} multiple={false}>
+              <select name="filter" onChange={handleChange} value={filter? filter : ""}  >
                 <option name="filterby" value="">
                   ---FilterBy---
                 </option>
@@ -161,8 +178,8 @@ export default function ShowAll({
                 network={network}
               />
               {isFiltered &&!noResults &&
-              <><input type="text" name="viewname" onChange={handleChange} placeholder={viewname}></input>
-              <button onClick={createView}>Create View</button>
+              <><input type="text" name="viewname" onChange={handleChange} placeholder={viewname}></input> {" "}
+              <button onClick={createView}>Create View</button> {" "}
               <button onClick={()=>checkAll()}>Select All</button></>
               }
             </div>
@@ -176,6 +193,7 @@ export default function ShowAll({
                   <div key={detail.id} className="transaction">
                     {isFiltered &&
                     <input type="checkbox" value={detail.id} 
+                    onChange={()=>{}}
                     checked={checkedTxn.includes(detail.id)} 
                     onClick={()=>toggleCheck(detail.id)}/>
                     }
@@ -197,16 +215,17 @@ export default function ShowAll({
              
             <div id="summary-container">
               <h6 className="details-header">Portfolio</h6> 
-               {portfolioChange < 0 ? <span className="text-warning portfolio-details">{portfolioChange.toFixed(2)}%</span> : <span className="text-primary portfolio-details">{portfolioChange.toFixed(2)}%</span>}
+               {portfolioChange === null? null: portfolioChange< 0 ? <span className="text-warning portfolio-details">{portfolioChange.toFixed(2)}%</span> : <span className="text-primary portfolio-details">{portfolioChange.toFixed(2)}%</span>}
 
               <div className ="portfolio-container">
                 
                 <div>
-                <span >Cost to date:</span> <br/><span className="text-secondary portfolio-details">USD {allTransactionDetails.stats.totalBoughtValue.toFixed(2)}</span><br/>
+                <span >Cost to date:</span> <br/><span className="text-secondary portfolio-details">USD {allTransactionDetails.stats.totalBoughtValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span><br/>
+              
                 </div>
                 <div>
                 <span >Current value:</span><br/>
-                <span className=" portfolio-details">USD {allTransactionDetails.stats.totalSoldValue.toFixed(2)} </span>
+                <span className=" portfolio-details">USD {allTransactionDetails.stats.totalSoldValue.toLocaleString(undefined, { maximumFractionDigits: 2 })} </span>
                 </div>
                
               </div>

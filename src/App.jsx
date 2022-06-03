@@ -4,9 +4,10 @@ import ShowAll from "./components/showall.jsx";
 import ShowOne from "./components/showone.jsx";
 import ShowAllViews from "./components/showallviews.jsx";
 import { Login } from "./components/login.jsx";
-import LoadingSpinner from "./components/spinner.jsx";
+import ErrorMsg from "./components/error.jsx";
 
-import axios from "axios";
+
+
 import ShowOneView from "./components/showoneview.jsx";
 
 //One ether = 1,000,000,000,000,000,000 wei
@@ -31,6 +32,9 @@ export default function App() {
   // set parameters
   const [parameters ,setParameters] = useState(null)
 
+  // filter params
+  const [filter, setFilter] = useState(null);
+
 
   // set what component to render
   const [display, setDisplay] = useState(null);
@@ -39,16 +43,24 @@ export default function App() {
   const [viewId, setViewId] = useState(null);
   const [viewname, setViewname] = useState(null)
 
+  //toggle showall
+  const [toggleShowAll, setToggleShowAll] = useState(false)
+  const [getall, setGetall] = useState(false)
+
   const submitRecord = () => {
     setIsLoading(false)
     setDisplay("form");
   };
   const showRecords = () => {    
+    setDisplay("showall");
+    setToggleShowAll(!toggleShowAll)
+    setGetall(false)
     setIsLoading(true)
+    setFilter(null)
     setParameters(null)
     console.log(isLoading, display, parameters)
-    setDisplay("showall");
-    // setShowAllViews(false);
+    
+    
     
   };
 
@@ -79,6 +91,9 @@ export default function App() {
               <button onClick={() => logout()}>Logout</button>
             </div>
           </div>
+          {display === "errormsg" &&
+            <ErrorMsg/>
+          }
 
           {display === "form" && 
             <Submit
@@ -96,7 +111,7 @@ export default function App() {
             <ShowAll
               token={token}
               setDisplay={setDisplay}
-              display={display}
+              toggleShowAll={toggleShowAll}
               setTransactionDetails={setTransactionDetails}
               setIsLoading={setIsLoading}
               isLoading={isLoading}
@@ -104,6 +119,10 @@ export default function App() {
               setParameters={setParameters}
               setAllTransactionDetails={setAllTransactionDetails}
               allTransactionDetails={allTransactionDetails}
+              filter={filter}
+              setFilter={setFilter}
+              getall={getall}
+              setGetall={setGetall}
             /> 
           }
 
@@ -138,7 +157,6 @@ export default function App() {
               viewId={viewId}  
               token={token}
               allTransactionDetails={allTransactionDetails}
-              // transactionDetails={transactionDetails}
               setTransactionDetails={setTransactionDetails}
               setDisplay={setDisplay}
               display={display}

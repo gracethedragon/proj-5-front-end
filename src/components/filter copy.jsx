@@ -74,6 +74,9 @@ export default function FilterView({
       setShowSaveView(false);
       setViewSaved("View Saved!");
       console.log(response);
+    }).catch((error)=>{
+      console.log(error)
+        setDisplay("errormsg")
     });
   }
 

@@ -62,7 +62,7 @@ export default function ShowAllViews({
                 return (
                   <div key={view.id} className="view">
                     <span className="view-transaction"onClick={() => showOne(view.id)}>
-                      {view.viewname} | {moment(view.createdDate).format('MMMM Do YYYY')}
+                      {view.viewname} | Created: {moment(view.createdDate).format('MMMM Do YYYY')}
                     </span>
                   </div>
                 );

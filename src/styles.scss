@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   // background-color: pink;
   padding: 10px 20px;
@@ -6,14 +12,14 @@ body {
   background-image: url("https://www.transparenttextures.com/patterns/bright-squares.png");
   font-family: "Viga", sans-serif;
   // font-size: 2px;
+  min-height: 100vh;
+  // max-width: 85vw;
+  
 }
-// svg {
-//   margin-top: 5px;
-// }
 
 svg text {
   font-family: "Black Ops One";
-  margin-top: 10px;
+  // margin-top: 10px;
   font-size: 80px;
   stroke-width: 2px;
   stroke: lightseagreen;
@@ -63,11 +69,12 @@ svg text {
 }
 
 #filter select,
-#filter input,
+// #filter input,
 #form-container input,
 #form-container select {
   margin: 10px;
 }
+
 #login-buttons input,
 #create-buttons input {
   margin: 20px;
@@ -76,11 +83,14 @@ svg text {
 #summary-container,
 #filter-container,
 #transaction-container,
-#form-container,
-#details {
+#form-container
+{
   margin: 15px 0px;
 }
 
+#details{
+  margin-top: 15px;
+}
 
 
 #content-container,
@@ -90,25 +100,28 @@ svg text {
   padding: 10px;
 }
 
+
 #edit-container{
   display:flex;
   justify-content: space-around;
 }
 
 .transaction input,
-#filter button, 
+// #filter button, 
 #edit-container input {
   margin-right: 10px;
 }
 
-#button-container button {
+#button-container button 
+{
   margin: 0px 5px;
 }
 
 #details-container,
 #graph {
-  width: 40%;
+  width: 38%;
   margin: auto;
+  padding-bottom:10px
 }
 
 #details-container {
@@ -119,11 +132,10 @@ svg text {
 button {
   font-family: "Black Ops One";
   display: inline-block;
-  padding: 0.35em 1.2em;
+  padding: 5px 10px;
   border: 0.1em solid lightseagreen;
   border-radius: 0.12em;
   box-sizing: border-box;
-
   color: lightseagreen;
   text-align: center;
   transition: all 0.2s;

@@ -53,17 +53,19 @@ export default function Submit({
     console.log(boughtDate)
 
     instance.post("/track-transaction", data).then((response) => {
-      console.log(response.data);
-
-      const { transactions, stats } = response.data;
-      const transactionData = { transactions, stats };
-
-      setTransactionDetails(transactionData);
       
-      setDisplay("showone");
-      console.log(transactionDetails);
-      setIsLoading(false)
-    });
+        console.log(response.data);  
+        const { transactions, stats } = response.data;
+        const transactionData = { transactions, stats };
+        setTransactionDetails(transactionData);
+        
+        setDisplay("showone");
+        console.log(transactionDetails);
+        setIsLoading(false)  
+    }).catch((error)=>{
+      console.log(error)
+        setDisplay("errormsg")
+    })
   }
 
   return (
@@ -98,17 +100,9 @@ export default function Submit({
             <label>Date Bought</label> <br/>
             <DatePicker maxDate={new Date ()} value={boughtDate} onChange={setBoughtDate} />
             <br/>
-            {/* <label>Bought @ USD / unit (2dp)</label> <br/>
-            <input 
-              type="number"
-              name="cost"
-              step="0.01"
-              onChange={(event)=>handleInputChange(event)}
-              required
-            /> <br/> */}
             </div>
             }
-            <input type="submit" value="submit" id="button" />
+            <input type="submit" value="submit" className="button" />
           </form>
         </div>
       )}

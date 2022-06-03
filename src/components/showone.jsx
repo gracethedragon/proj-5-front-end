@@ -44,11 +44,11 @@ export default function ShowOne({
           {transactionDetails.transactions[0].qty} {transactionDetails.transactions[0].token}</h6>
            <div>
           <h6 className="details" >
-            Bought @ <span className="details-highlight">USD {transactionDetails.transactions[0].boughtValue.toFixed(2)}</span> on {moment(transactionDetails.transactions[0].boughtDate).format('MMMM Do YYYY')} </h6>
+            Bought @ <span className="details-highlight">USD {transactionDetails.transactions[0].boughtValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span> on {moment(transactionDetails.transactions[0].boughtDate).format('MMMM Do YYYY')} </h6>
 
           <h6 className="details" >
           {transactionDetails.transactions[0].transactionType === "BUY" ?`Currently @`  : `Sold @`}
-          {" "}<span className="details-highlight">USD {transactionDetails.transactions[0].soldValue.toFixed(2)}</span> on {moment(transactionDetails.transactions[0].soldDate).format('MMMM Do YYYY')}</h6>
+          {" "}<span className="details-highlight">USD {transactionDetails.transactions[0].soldValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span> on {moment(transactionDetails.transactions[0].soldDate).format('MMMM Do YYYY')}</h6>
 
           <h6 className="details">Change of <span className="details-highlight">{(((transactionDetails.stats.totalSoldValue - transactionDetails.stats.totalBoughtValue)/ transactionDetails.stats.totalSoldValue)* 100).toFixed(2)}% </span></h6>
           </div>
